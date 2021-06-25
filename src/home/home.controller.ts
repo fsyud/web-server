@@ -7,7 +7,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { HomeSerivce } from './home.sevice';
+import { HomeSerivce } from './home.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 import { CreatePostDto, UpdatePostDto } from './home.dto';
