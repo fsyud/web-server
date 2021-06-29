@@ -1,4 +1,4 @@
 export class loginParams {
-  username: string;
+  name: string;
   password: string;
 }

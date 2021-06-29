@@ -11,17 +11,38 @@ export class LoginService {
   ) {}
 
   async login(loginParams: loginParams): Promise<any> {
-    await new this.homeModel(loginParams).
+    const user = await this.homeModel.findOne({
+      name: loginParams.name,
+    });
+    if (user) {
+      return {
+        code: 400,
+        msg: '用户已存在',
+      };
+    }
+    // await new this.homeModel(loginParams).
     return {
       success: true,
     };
   }
 
   async register(registerParams: loginParams): Promise<any> {
+    const user = await this.homeModel
+      .findOne({
+        name: registerParams.name,
+      })
+      .exec();
+    if (user) {
+      return {
+        code: 400,
+        msg: '用户已存在',
+      };
+    }
     await new this.homeModel(registerParams).save();
     return {
+      code: 200,
       success: true,
-      msg: '注册成功'
+      msg: '注册成功',
     };
   }
 }

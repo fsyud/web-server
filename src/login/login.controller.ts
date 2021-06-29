@@ -10,9 +10,11 @@ export class LoginController {
   @Post('login')
   @ApiOperation({ summary: '登录' })
   async login(@Body() loginParam: loginParams): Promise<any> {
-    return this.loginService.createPage(loginParam);
+    return this.loginService.login(loginParam);
   }
 
+  @Post('register')
+  @ApiOperation({ summary: '注册' })
   async register(@Body() registerParam: loginParams): Promise<any> {
     return this.loginService.register(registerParam);
   }
