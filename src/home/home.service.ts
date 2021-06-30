@@ -13,8 +13,12 @@ export class HomeSerivce {
   ) {}
 
   async createPage(createPost: CreatePostDto): Promise<any> {
+    console.log(createPost);
+
     await new this.homeModel(createPost).save();
     return {
+      code: 200,
+      msg: '发布成功',
       success: true,
     };
   }

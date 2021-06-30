@@ -7,10 +7,13 @@ export class CreatePostDto {
   title: string;
   @ApiProperty({ description: '文章创建内容' })
   content: string;
+  @ApiProperty({ description: '文章类型' })
+  type?: string | number;
 }
 
 export class UpdatePostDto {
   _id: string | number;
   title: string;
   content: string;
+  type?: string;
 }

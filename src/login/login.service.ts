@@ -32,6 +32,7 @@ export class LoginService {
         name: registerParams.name,
       })
       .exec();
+
     if (user) {
       return {
         code: 400,
