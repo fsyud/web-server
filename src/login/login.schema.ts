@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type HomeDocument = Login & Document;
-
+export type LoginDocument = Login & Document;
 @Schema()
 export class Login extends Document {
   @Prop({ required: true })

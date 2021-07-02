@@ -40,7 +40,6 @@ export class LoginService {
 
     if (user) {
       return {
-        code: 400,
         msg: '用户已存在',
       };
     }
@@ -51,7 +50,6 @@ export class LoginService {
 
     await new this.homeModel(hushPassword).save();
     return {
-      code: 200,
       success: true,
       msg: '注册成功',
     };
