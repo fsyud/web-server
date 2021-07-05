@@ -23,7 +23,16 @@ export class HomeSerivce {
   }
 
   async getArtList(query: IQuery = {}): Promise<any[]> {
-    const data = await this.homeModel.find().exec();
+    const { pageSize = 15, skip = 0 } = query;
+
+    const data = await this.homeModel
+      .find()
+      .limit(pageSize)
+      .select(
+        'img_url state tags title keyword author meta create_time update_time',
+      )
+      .skip(skip)
+      .exec();
     return data;
   }
 

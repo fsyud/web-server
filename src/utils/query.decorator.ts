@@ -4,7 +4,7 @@ import { Request } from 'express';
 
 export interface IQuery {
   where?: any;
-  limit?: number;
+  pageSize?: number;
   page?: number;
   skip?: number;
   sort?: string | any;

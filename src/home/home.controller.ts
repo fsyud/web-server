@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { HomeSerivce } from './home.service';
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { IQuery } from './../utils/query.decorator';
 
 import { CreatePostDto, UpdatePostDto } from './home.dto';
 
@@ -21,16 +22,10 @@ export class HomeController {
   async create(@Body() createPost: CreatePostDto): Promise<any> {
     return this.homeSerivce.createPage(createPost);
   }
-  @Get('list')
-  @ApiQuery({
-    name: 'query',
-    type: String,
-    required: false,
-    description: 'Query options',
-  })
+  @Post('list')
   @ApiOperation({ summary: '获取首页文章列表' })
-  async getList(): Promise<any> {
-    return this.homeSerivce.getArtList();
+  async getList(@Body() getDetailBody: IQuery = {}): Promise<any> {
+    return this.homeSerivce.getArtList(getDetailBody);
   }
   @Get('detail')
   @ApiOperation({ summary: '文章详情' })
