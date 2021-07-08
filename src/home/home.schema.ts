@@ -39,6 +39,7 @@ export class Home extends Document {
   // 创建时间
   create_time: Date;
 
+  // 更新时间
   update_time: Date;
 }
 

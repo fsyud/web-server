@@ -14,7 +14,6 @@ export class HomeSerivce {
   ) {}
 
   async createPage(createPost: CreatePostDto): Promise<any> {
-    console.log(createPost);
     await new this.homeModel(createPost).save();
     return {
       msg: '发布成功',
@@ -23,7 +22,15 @@ export class HomeSerivce {
   }
 
   async getArtList(query: IQuery = {}): Promise<any[]> {
-    const { pageSize = 15, skip = 0 } = query;
+    const { pageSize = 15, page = 1 } = query;
+
+    let skip = 0;
+
+    if (page <= 1) {
+      skip == 0;
+    } else {
+      skip = page - 1;
+    }
 
     const data = await this.homeModel
       .find()
@@ -31,7 +38,7 @@ export class HomeSerivce {
       .select(
         'img_url state tags title keyword author meta create_time update_time',
       )
-      .skip(skip)
+      .skip(skip * pageSize)
       .exec();
     return data;
   }
