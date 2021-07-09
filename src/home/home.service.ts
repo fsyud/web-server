@@ -1,6 +1,7 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as moment from 'moment';
 import { Home } from './home.schema';
 import { CreatePostDto, UpdatePostDto } from './home.dto';
 import { IQuery } from './../utils/query.decorator';
@@ -15,6 +16,7 @@ export class HomeSerivce {
 
   async createPage(createPost: CreatePostDto): Promise<any> {
     await new this.homeModel(createPost).save();
+
     return {
       msg: '发布成功',
       success: true,
@@ -36,7 +38,7 @@ export class HomeSerivce {
       .find()
       .limit(pageSize)
       .select(
-        'img_url state tags title keyword author meta create_time update_time',
+        'img_url type state tags title keyword author meta create_time update_time',
       )
       .skip(skip * pageSize)
       .exec();

@@ -17,7 +17,7 @@ import { CreatePostDto, UpdatePostDto } from './home.dto';
 @ApiTags('首页')
 export class HomeController {
   constructor(private readonly homeSerivce: HomeSerivce) {}
-  @Put('create')
+  @Post('create')
   @ApiOperation({ summary: '创建首页文章' })
   async create(@Body() createPost: CreatePostDto): Promise<any> {
     return this.homeSerivce.createPage(createPost);
@@ -33,7 +33,7 @@ export class HomeController {
     return this.homeSerivce.getOneDetail(id);
   }
 
-  @Post('update')
+  @Put('update')
   @ApiOperation({ summary: '编辑文章' })
   update(@Body() updateBody: UpdatePostDto) {
     return this.homeSerivce.updateArtlist(updateBody._id, updateBody);

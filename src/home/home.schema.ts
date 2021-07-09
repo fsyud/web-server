@@ -37,9 +37,11 @@ export class Home extends Document {
   };
 
   // 创建时间
+  @Prop({ required: true, default: Date.now })
   create_time: Date;
 
   // 更新时间
+  @Prop({ required: true, default: Date.now })
   update_time: Date;
 }
 
