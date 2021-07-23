@@ -8,7 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { HomeSerivce } from './home.service';
-import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { IQuery } from './../utils/query.decorator';
 
 import { CreatePostDto, UpdatePostDto } from './home.dto';

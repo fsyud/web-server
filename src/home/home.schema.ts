@@ -4,6 +4,21 @@ import { Document } from 'mongoose';
 export type HomeDocument = Home & Document;
 
 @Schema()
+export class metaApi extends Document {
+  // 其他元信息
+  @Prop({ default: 0 })
+  views: number;
+
+  @Prop({ default: 0 })
+  likes: number;
+
+  @Prop({ default: 0 })
+  comments: number;
+}
+
+export const metaApiSchema = SchemaFactory.createForClass(metaApi);
+
+@Schema()
 export class Home extends Document {
   img_url: string; // 封面图片
 
@@ -29,20 +44,19 @@ export class Home extends Document {
   @Prop({ required: true })
   content: string; // 文章内容
 
-  // 其他元信息
+  @Prop({ required: true, type: metaApiSchema })
   meta: {
     views: number;
-    likes: number;
-    comments: number;
+    likes?: number;
+    comments?: number;
   };
 
   // 创建时间
-  @Prop({ required: true, default: Date.now })
-  create_time: Date;
+  @Prop({ required: true })
+  create_times: string;
 
   // 更新时间
-  @Prop({ required: true, default: Date.now })
-  update_time: Date;
+  update_times: string;
 }
 
 export const HomeSchema = SchemaFactory.createForClass(Home);

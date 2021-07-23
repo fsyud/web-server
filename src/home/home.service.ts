@@ -15,8 +15,13 @@ export class HomeSerivce {
   ) {}
 
   async createPage(createPost: CreatePostDto): Promise<any> {
-    await new this.homeModel(createPost).save();
-
+    const midCreate = {
+      ...createPost,
+      ...{
+        create_times: moment().format(),
+      },
+    };
+    await new this.homeModel(midCreate).save();
     return {
       msg: '发布成功',
       success: true,
@@ -25,9 +30,7 @@ export class HomeSerivce {
 
   async getArtList(query: IQuery = {}): Promise<any[]> {
     const { pageSize = 15, page = 1 } = query;
-
     let skip = 0;
-
     if (page <= 1) {
       skip == 0;
     } else {
@@ -38,15 +41,25 @@ export class HomeSerivce {
       .find()
       .limit(pageSize)
       .select(
-        'img_url type state tags title keyword author meta create_time update_time',
+        'img_url type state tags title keyword author meta create_times update_times',
       )
       .skip(skip * pageSize)
       .exec();
+
     return data;
   }
 
   async getOneDetail(id: idTypes): Promise<any> {
-    return await this.homeModel.findById(id);
+    const find = async () => {
+      const a = await this.homeModel.findById(id);
+
+      if (a) {
+        this.homeModel.findByIdAndUpdate(id, { type: '3' }).exec();
+        return a;
+      }
+    };
+
+    return find();
   }
 
   async updateArtlist(id: idTypes, updataContent: UpdatePostDto): Promise<any> {
@@ -59,6 +72,7 @@ export class HomeSerivce {
   async removeArtlist(id: idTypes): Promise<any> {
     await this.homeModel.findByIdAndDelete(id);
     return {
+      msg: '删除成功',
       success: true,
     };
   }
