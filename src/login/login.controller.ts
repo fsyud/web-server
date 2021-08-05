@@ -16,6 +16,7 @@ export class LoginController {
   @Post('register')
   @ApiOperation({ summary: '注册' })
   async register(@Body() registerParam: loginParams): Promise<any> {
+    console.log(registerParam);
     return this.loginService.register(registerParam);
   }
 }

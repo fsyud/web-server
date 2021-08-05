@@ -1,15 +1,22 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { ExecutionContext, Injectable } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class JwtAuthGuard extends AuthGuard('jwt') {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
 
-    // request
+    console.log(request.url);
 
-    return false;
+    const whitelist = ['/login/user_login', '/login/register', '/home/list'];
+
+    if (whitelist.find((url) => url === request.url)) {
+      return true;
+    }
+
+    return super.canActivate(context);
   }
 }

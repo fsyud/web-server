@@ -1,6 +1,7 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { JwtService } from '@nestjs/jwt';
 import { Login } from './login.schema';
 import { loginParams } from './login.dto';
 import { MD5_SUFFIX, md5 } from './../utils';
@@ -9,6 +10,8 @@ import { MD5_SUFFIX, md5 } from './../utils';
 export class LoginService {
   constructor(
     @InjectModel(Login.name) private readonly homeModel: Model<Login>,
+    // 引入 JwtService
+    private readonly jwtService: JwtService,
   ) {}
 
   // 登录
@@ -29,9 +32,13 @@ export class LoginService {
         msg: '密码不正确！',
       };
     }
+
+    const token = this.jwtService.sign(loginParams);
+
     return {
       success: true,
       msg: '登录成功！',
+      token,
     };
   }
 
