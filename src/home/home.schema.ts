@@ -44,7 +44,7 @@ export class Home extends Document {
   @Prop({ required: true })
   content: string; // 文章内容
 
-  @Prop({ required: true, type: metaApiSchema })
+  @Prop({ type: metaApiSchema })
   meta: {
     views: number;
     likes?: number;

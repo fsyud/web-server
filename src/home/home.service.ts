@@ -44,6 +44,7 @@ export class HomeSerivce {
         'img_url type state tags title keyword author meta create_times update_times',
       )
       .skip(skip * pageSize)
+      .sort({ create_times: -1 })
       .exec();
 
     return data;
@@ -51,11 +52,13 @@ export class HomeSerivce {
 
   async getOneDetail(id: idTypes): Promise<any> {
     const find = async () => {
-      const a = await this.homeModel.findById(id);
+      const data = await this.homeModel.findById(id);
 
-      if (a) {
-        this.homeModel.findByIdAndUpdate(id, { type: '3' }).exec();
-        return a;
+      if (data) {
+        await this.homeModel.findByIdAndUpdate(id, {
+          meta: { views: 3 },
+        });
+        return data;
       }
     };
 
