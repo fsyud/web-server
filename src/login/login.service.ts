@@ -16,15 +16,22 @@ export class LoginService {
     const user = await this.homeModel.findOne({
       name: loginParams.name,
     });
-    if (user) {
+
+    if (!user) {
       return {
         code: 400,
-        msg: '用户已存在',
+        msg: '用户未注册！',
       };
     }
-    // await new this.homeModel(loginParams).
+    if (user.password !== md5(loginParams.password + MD5_SUFFIX)) {
+      return {
+        code: 400,
+        msg: '密码不正确！',
+      };
+    }
     return {
       success: true,
+      msg: '登录成功！',
     };
   }
 

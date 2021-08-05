@@ -7,7 +7,7 @@ import { loginParams } from './login.dto';
 @ApiTags('登录/注册')
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
-  @Post('users')
+  @Post('user_login')
   @ApiOperation({ summary: '登录' })
   async login(@Body() loginParam: loginParams): Promise<any> {
     return this.loginService.login(loginParam);
