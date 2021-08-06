@@ -2,21 +2,24 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
-import { Login } from './login.schema';
-import { loginParams } from './login.dto';
-import { MD5_SUFFIX, md5 } from './../utils';
+import { Auth } from './auth.schema';
+import { loginParams } from './auth.dto';
+import { MD5_SUFFIX, md5 } from '../utils';
+import { IQuery } from './../utils/query.decorator';
+
+type idTypes = string | number;
 
 @Injectable()
-export class LoginService {
+export class AuthService {
   constructor(
-    @InjectModel(Login.name) private readonly homeModel: Model<Login>,
+    @InjectModel(Auth.name) private readonly authModel: Model<Auth>,
     // 引入 JwtService
     private readonly jwtService: JwtService,
   ) {}
 
   // 登录
   async login(loginParams: loginParams): Promise<any> {
-    const user = await this.homeModel.findOne({
+    const user = await this.authModel.findOne({
       name: loginParams.name,
     });
 
@@ -26,6 +29,7 @@ export class LoginService {
         msg: '用户未注册！',
       };
     }
+
     if (user.password !== md5(loginParams.password + MD5_SUFFIX)) {
       return {
         code: 400,
@@ -33,12 +37,12 @@ export class LoginService {
       };
     }
 
-    const token = this.jwtService.sign(loginParams);
+    const payload = { name: user.name, sub: user._id };
 
     return {
       success: true,
       msg: '登录成功！',
-      token,
+      access_token: this.jwtService.sign(payload),
     };
   }
 
@@ -46,7 +50,7 @@ export class LoginService {
   async register(registerParams: loginParams): Promise<any> {
     const { name, password } = registerParams;
 
-    const user = await this.homeModel
+    const user = await this.authModel
       .findOne({
         name,
       })
@@ -62,10 +66,37 @@ export class LoginService {
       password: md5(password + MD5_SUFFIX),
     };
 
-    await new this.homeModel(hushPassword).save();
+    await new this.authModel(hushPassword).save();
     return {
       success: true,
       msg: '注册成功',
+    };
+  }
+
+  // 用户列表
+  async getArtList(query: IQuery = {}): Promise<any[]> {
+    const { pageSize = 15, page = 1 } = query;
+    let skip = 0;
+    if (page <= 1) {
+      skip == 0;
+    } else {
+      skip = page - 1;
+    }
+
+    const data = await this.authModel
+      .find()
+      .limit(pageSize)
+      .skip(skip * pageSize)
+      .exec();
+
+    return data;
+  }
+
+  async removeArtlist(id: idTypes): Promise<any> {
+    await this.authModel.findByIdAndDelete(id);
+    return {
+      msg: '删除成功',
+      success: true,
     };
   }
 }

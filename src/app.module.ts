@@ -2,7 +2,9 @@ import { Module } from '@nestjs/common';
 import { HomeModule } from './home/home.module';
 import { AwhileModule } from './awhile/awhile.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { LoginModule } from './login/login.module';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './guard/auth.guard';
 
 @Module({
   imports: [
@@ -13,7 +15,13 @@ import { LoginModule } from './login/login.module';
     }),
     HomeModule,
     AwhileModule,
-    LoginModule,
+    AuthModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
   ],
 })
 export class AppModule {}
