@@ -9,9 +9,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
 
-    const whitelist = ['/login/user_login', '/login/register', '/home/list'];
+    const whitelist = [
+      '/login/user_login',
+      '/login/register',
+      '/home/list',
+      '/home/detail',
+    ];
 
-    if (whitelist.find((url) => url === request.url)) {
+    if (whitelist.find((url) => request.url.includes(url))) {
       return true;
     }
     return super.canActivate(context);
