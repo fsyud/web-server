@@ -55,6 +55,7 @@ export class HomeSerivce {
       const data = await this.homeModel.findById(id);
 
       if (data) {
+        // console.log(data);
         await this.homeModel.findByIdAndUpdate(id, {
           meta: { views: 3 },
         });
