@@ -20,12 +20,16 @@ export const metaApiSchema = SchemaFactory.createForClass(metaApi);
 
 @Schema()
 export class Home extends Document {
+  @Prop({ required: true })
   img_url: string; // 封面图片
 
   // 文章发布状态 => 0 草稿，1 已发布
   state: number;
 
   tags: string;
+
+  @Prop({ required: true })
+  desc: string;
 
   @Prop()
   name: string;

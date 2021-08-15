@@ -13,7 +13,6 @@ export class CommonController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file) {
-    console.log(file);
-    return file.path;
+    return file;
   }
 }

@@ -9,6 +9,10 @@ export class CreatePostDto {
   content: string;
   @ApiProperty({ description: '文章类型' })
   type?: string | number;
+  @ApiProperty({ description: '文章封面' })
+  img_url?: any;
+  @ApiProperty({ description: '文章描述' })
+  desc: string;
 }
 
 export class UpdatePostDto {

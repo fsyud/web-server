@@ -29,7 +29,9 @@ export class HomeSerivce {
   }
 
   async getArtList(query: IQuery = {}): Promise<any[]> {
-    const { pageSize = 15, page = 1 } = query;
+    console.log(query);
+
+    const { pageSize = 15, page = 1, where = {} } = query;
     let skip = 0;
     if (page <= 1) {
       skip == 0;
@@ -39,9 +41,10 @@ export class HomeSerivce {
 
     const data = await this.homeModel
       .find()
+      .where(where)
       .limit(pageSize)
       .select(
-        'img_url type state tags title keyword author meta create_times update_times',
+        'img_url type state tags title keyword author meta create_times update_times desc',
       )
       .skip(skip * pageSize)
       .sort({ create_times: -1 })
