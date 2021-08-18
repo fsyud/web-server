@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guard/auth.guard';
 import { CommonModule } from './common/common.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CommonModule } from './common/common.module';
     AwhileModule,
     AuthModule,
     CommonModule,
+    CommentModule,
   ],
   providers: [
     {
