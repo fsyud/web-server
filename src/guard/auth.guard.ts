@@ -16,6 +16,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       '/login/register',
       '/home/list',
       '/home/detail',
+      '/home/hot',
       '/common/upload',
     ];
 
