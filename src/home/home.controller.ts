@@ -44,4 +44,10 @@ export class HomeController {
   remove(@Query('id') id: string) {
     return this.homeSerivce.removeArtlist(id);
   }
+
+  @Post('hot')
+  @ApiOperation({ summary: '获取热门文章' })
+  hot() {
+    return this.homeSerivce.hotArticle();
+  }
 }

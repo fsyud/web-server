@@ -20,6 +20,13 @@ export class HomeSerivce {
       ...{
         create_times: moment().format(),
       },
+      ...{
+        meta: {
+          views: 0,
+          likes: 0,
+          comments: 0,
+        },
+      },
     };
     await new this.homeModel(midCreate).save();
     return {
@@ -29,9 +36,12 @@ export class HomeSerivce {
   }
 
   async getArtList(query: IQuery = {}): Promise<any[]> {
-    console.log(query);
-
-    const { pageSize = 15, page = 1, where = {} } = query;
+    const {
+      pageSize = 15,
+      page = 1,
+      where = {},
+      sort = { create_times: -1 },
+    } = query;
     let skip = 0;
     if (page <= 1) {
       skip == 0;
@@ -47,7 +57,7 @@ export class HomeSerivce {
         'img_url type state tags title keyword author meta create_times update_times desc',
       )
       .skip(skip * pageSize)
-      .sort({ create_times: -1 })
+      .sort(sort)
       .exec();
 
     return data;
@@ -58,9 +68,8 @@ export class HomeSerivce {
       const data = await this.homeModel.findById(id);
 
       if (data) {
-        // console.log(data);
         await this.homeModel.findByIdAndUpdate(id, {
-          meta: { views: 3 },
+          meta: { views: data.meta.views + 1 },
         });
         return data;
       }
@@ -82,5 +91,13 @@ export class HomeSerivce {
       msg: '删除成功',
       success: true,
     };
+  }
+
+  async hotArticle(): Promise<any> {
+    return await this.homeModel
+      .find()
+      .sort({ views: 1 })
+      .select('title')
+      .exec();
   }
 }

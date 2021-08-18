@@ -7,7 +7,7 @@ export interface IQuery {
   pageSize?: number;
   page?: number;
   skip?: number;
-  sort?: string | any;
+  sort?: any;
   populate?: string | any;
   select?: string | any;
   collation?: QueryOptions['collation'];

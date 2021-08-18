@@ -10,7 +10,7 @@ import * as nuid from 'nuid';
     MulterModule.register({
       storage: diskStorage({
         //自定义路径
-        destination: `/private/blog-server/fileUpload/${dayjs().format(
+        destination: `/Volumes/workspace/github/blog-server/fileUpload/${dayjs().format(
           'YYYY-MM-DD',
         )}`,
         filename: (req, file, cb) => {
