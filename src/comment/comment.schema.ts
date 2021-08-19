@@ -2,6 +2,44 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 
+// 一级评论
+@Schema()
+export class CommitProps extends Document {
+  // 其他元信息
+  @Prop({ type: mongoose.Schema.Types.ObjectId })
+  user_id: string;
+
+  @Prop({ default: '' })
+  name: string;
+
+  @Prop({ default: 1 })
+  type: number;
+
+  @Prop({ default: 'user' })
+  avatar: string;
+}
+
+@Schema()
+export class secondCommitUserProps extends Document {
+  @Prop({ type: CommitProps })
+  user: string;
+
+  @Prop({ type: CommitProps })
+  to_user: string;
+
+  @Prop({ default: 0 })
+  likes: number;
+
+  @Prop({ required: true, validate: /\S+/ })
+  content: number;
+
+  @Prop({ default: 1 })
+  state: number;
+
+  @Prop({ required: true })
+  create_times: string;
+}
+
 @Schema()
 export class Comment extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
@@ -10,7 +48,7 @@ export class Comment extends Document {
   @Prop({ required: true, validate: /\S+/ })
   content: string;
 
-  @Prop()
+  @Prop({ required: true })
   name: string;
 
   // 被赞数
@@ -35,6 +73,63 @@ export class Comment extends Document {
   // 创建时间
   @Prop({ required: true })
   create_times: string;
+
+  // 一级评论
+  @Prop({ type: CommitProps })
+  oneComment: {
+    // 用户id
+    user_id: any;
+
+    // 名字
+    name: string;
+
+    // 用户类型 0：博主 1：其他用户
+    type: number;
+
+    // 头像
+    avatar: string;
+  };
+
+  @Prop({ type: secondCommitUserProps })
+  secondCommit: {
+    // 谁在评论
+    user: {
+      user_id: string;
+
+      // 名字
+      name: string;
+
+      // 用户类型 0：博主 1：其他用户
+      type: number;
+
+      // 头像
+      avatar: string;
+    };
+    // 对谁评论
+    to_user: {
+      user_id: string;
+
+      // 名字
+      name: string;
+
+      // 用户类型 0：博主 1：其他用户
+      type: number;
+
+      // 头像
+      avatar: string;
+    };
+
+    // 被赞数
+    likes: number;
+
+    // content
+    content: string;
+
+    // 状态 => 0 待审核 / 1 通过正常 / -1 已删除 / -2 垃圾评论
+    state: number;
+    // 创建日期
+    create_time: string;
+  };
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

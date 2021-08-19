@@ -69,7 +69,11 @@ export class HomeSerivce {
 
       if (data) {
         await this.homeModel.findByIdAndUpdate(id, {
-          meta: { views: data.meta.views + 1 },
+          meta: {
+            comments: data.meta.comments,
+            views: data.meta.views + 1,
+            likes: data.meta.likes,
+          },
         });
         return data;
       }

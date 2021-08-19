@@ -50,7 +50,7 @@ export class Home extends Document {
 
   @Prop({ required: true, type: metaApiSchema })
   meta: {
-    views: number;
+    views?: number;
     likes?: number;
     comments?: number;
   };

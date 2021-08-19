@@ -10,8 +10,8 @@ export class CommentController {
 
   @Post('list')
   @ApiOperation({ summary: '获取评论列表' })
-  async getList(): Promise<any> {
-    return this.commentSerivce.getCommentList();
+  async getList(@Body() getCommit: { article_id: string }): Promise<any> {
+    return this.commentSerivce.getCommentList(getCommit);
   }
 
   @Post('addOne')
