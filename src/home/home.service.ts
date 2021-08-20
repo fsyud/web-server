@@ -36,12 +36,7 @@ export class HomeSerivce {
   }
 
   async getArtList(query: IQuery = {}): Promise<any[]> {
-    const {
-      pageSize = 15,
-      page = 1,
-      where = {},
-      sort = { create_times: -1 },
-    } = query;
+    const { pageSize = 15, page = 1, where = {}, sort = {} } = query;
     let skip = 0;
     if (page <= 1) {
       skip == 0;
