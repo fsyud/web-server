@@ -13,6 +13,11 @@ export class CommonController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file) {
+    const a = '/Volumes/workspace/github/blog-server/';
+    const b = '/private/blog-server/';
+
+    file.path = b + file.path;
+
     return file;
   }
 }
