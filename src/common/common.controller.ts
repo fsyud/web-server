@@ -13,11 +13,9 @@ export class CommonController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file) {
-    const a = '/Volumes/workspace/github/';
-    const b = '/private/blog-server/';
-
-    file.path = (b + file.path).replace('../', '');
-
+    file.path =
+      'https://file.starryskystar.space/images/' +
+      file.path.replace('../fileUpload/', '');
     return file;
   }
 }
