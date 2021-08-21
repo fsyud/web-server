@@ -16,7 +16,36 @@ export class metaApi extends Document {
   comments: number;
 }
 
+@Schema()
+export class authInfoApi extends Document {
+  // 其他元信息
+  @Prop()
+  name: string;
+
+  @Prop()
+  password: string;
+
+  @Prop()
+  type: string;
+
+  @Prop()
+  username: string;
+
+  @Prop()
+  avator_url: string;
+
+  @Prop()
+  job: string;
+
+  @Prop()
+  company: string;
+
+  @Prop()
+  introduce: string;
+}
+
 export const metaApiSchema = SchemaFactory.createForClass(metaApi);
+export const authInfoApiSchema = SchemaFactory.createForClass(authInfoApi);
 
 @Schema()
 export class Home extends Document {
@@ -42,7 +71,6 @@ export class Home extends Document {
 
   keyword: string; // 关键字 seo
 
-  @Prop({ required: true })
   author: string; // 作者
 
   @Prop({ required: true })
@@ -61,6 +89,27 @@ export class Home extends Document {
 
   // 更新时间
   update_times: string;
+
+  user_id: string;
+
+  @Prop({ required: true, type: authInfoApiSchema })
+  author_user_info: {
+    name?: string;
+
+    password?: string;
+
+    type?: string;
+
+    username?: string;
+
+    avator_url?: string;
+
+    job?: string;
+
+    company?: string;
+
+    introduce?: string;
+  };
 }
 
 export const HomeSchema = SchemaFactory.createForClass(Home);

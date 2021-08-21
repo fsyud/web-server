@@ -42,7 +42,6 @@ export class LoginController {
   @Get('userinfo')
   @ApiOperation({ summary: '获取用户信息' })
   async getUser(@Query('id') id: string) {
-    console.log(id);
     return this.loginService.getOneUserInfo(id);
   }
 }

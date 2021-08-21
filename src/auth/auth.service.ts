@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { Auth } from './auth.schema';
+import { Home } from './../home/home.schema';
 import { userParams } from './auth.dto';
 import { MD5_SUFFIX, md5 } from '../utils';
 import { IQuery } from './../utils/query.decorator';
@@ -13,6 +14,7 @@ type idTypes = string | number;
 export class AuthService {
   constructor(
     @InjectModel(Auth.name) private readonly authModel: Model<Auth>,
+    @InjectModel(Home.name) private readonly homeModel: Model<Home>,
     // 引入 JwtService
     private readonly jwtService: JwtService,
   ) {}
@@ -103,6 +105,21 @@ export class AuthService {
 
   async updateUserInfo(updateBody: userParams): Promise<any> {
     await this.authModel.findByIdAndUpdate(updateBody.id, updateBody);
+
+    // 更新文章列表的用户信息
+    const data: any = await this.homeModel
+      .findOne()
+      .where({ 'author_user_info._id': updateBody.id })
+      .exec();
+
+    if (data) {
+      const midObj = data.author_user_info;
+      midObj.username = updateBody.username;
+      await this.homeModel.findByIdAndUpdate(data._id, {
+        author_user_info: midObj,
+      });
+    }
+
     return {
       msg: '修改成功',
       success: true,

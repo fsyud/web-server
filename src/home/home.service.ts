@@ -3,7 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as moment from 'moment';
 import { Home } from './home.schema';
+import { Auth } from './../auth/auth.schema';
 import { CreatePostDto, UpdatePostDto } from './home.dto';
+
 import { IQuery } from './../utils/query.decorator';
 
 type idTypes = string | number;
@@ -12,10 +14,11 @@ type idTypes = string | number;
 export class HomeSerivce {
   constructor(
     @InjectModel(Home.name) private readonly homeModel: Model<Home>,
+    @InjectModel(Auth.name) private readonly authModel: Model<Auth>,
   ) {}
 
   async createPage(createPost: CreatePostDto): Promise<any> {
-    const midCreate = {
+    const midCreate: any = {
       ...createPost,
       ...{
         create_times: moment().format(),
@@ -28,6 +31,9 @@ export class HomeSerivce {
         },
       },
     };
+
+    const user = await this.authModel.findById(createPost.user_id);
+    midCreate.author_user_info = user || {};
     await new this.homeModel(midCreate).save();
     return {
       msg: '发布成功',
@@ -49,7 +55,7 @@ export class HomeSerivce {
       .where(where)
       .limit(pageSize)
       .select(
-        'img_url type state tags title keyword author meta create_times update_times desc',
+        'img_url type state tags title keyword author meta create_times update_times desc author_user_info',
       )
       .skip(skip * pageSize)
       .sort(sort)

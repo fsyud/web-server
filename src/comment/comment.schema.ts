@@ -40,6 +40,11 @@ export class secondCommitUserProps extends Document {
   create_times: string;
 }
 
+export const CommitPropsSchema = SchemaFactory.createForClass(CommitProps);
+export const secondCommitUserPropsSchema = SchemaFactory.createForClass(
+  secondCommitUserProps,
+);
+
 @Schema()
 export class Comment extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
@@ -75,7 +80,7 @@ export class Comment extends Document {
   create_times: string;
 
   // 一级评论
-  @Prop({ type: CommitProps })
+  @Prop({ type: CommitPropsSchema })
   oneComment: {
     // 用户id
     user_id: any;
@@ -90,7 +95,7 @@ export class Comment extends Document {
     avatar: string;
   };
 
-  @Prop({ type: secondCommitUserProps })
+  @Prop({ type: secondCommitUserPropsSchema })
   secondCommit: {
     // 谁在评论
     user: {

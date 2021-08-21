@@ -3,13 +3,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { LoginController } from './auth.controller';
 import { Auth, LoginSchema } from './auth.schema';
+import { Home, HomeSchema } from './../home/home.schema';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { SECRET } from './secret';
-
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Auth.name, schema: LoginSchema }]),
+    MongooseModule.forFeature([{ name: Home.name, schema: HomeSchema }]),
     // 引入 Jwt 模块并配置秘钥和有效时长
     JwtModule.register({
       secret: SECRET,
