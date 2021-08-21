@@ -13,10 +13,10 @@ export class CommonController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file) {
-    const a = '/Volumes/workspace/github/blog-server/';
+    const a = '/Volumes/workspace/github/';
     const b = '/private/blog-server/';
 
-    file.path = b + file.path;
+    file.path = (b + file.path).replace('../', '');
 
     return file;
   }
