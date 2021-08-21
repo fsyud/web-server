@@ -13,6 +13,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     const whitelist = [
       '/login/user_login',
+      '/login/userinfo',
       '/login/register',
       '/home/list',
       '/home/detail',

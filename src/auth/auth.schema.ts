@@ -14,7 +14,19 @@ export class Auth extends Document {
   type: string;
 
   @Prop()
+  username: string;
+
+  @Prop()
   avator_url: string;
+
+  @Prop()
+  job: string;
+
+  @Prop()
+  company: string;
+
+  @Prop()
+  introduce: string;
 }
 
 export const LoginSchema = SchemaFactory.createForClass(Auth);

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { Auth } from './auth.schema';
-import { loginParams } from './auth.dto';
+import { userParams } from './auth.dto';
 import { MD5_SUFFIX, md5 } from '../utils';
 import { IQuery } from './../utils/query.decorator';
 
@@ -18,7 +18,7 @@ export class AuthService {
   ) {}
 
   // 登录
-  async login(loginParams: loginParams): Promise<any> {
+  async login(loginParams: userParams): Promise<any> {
     const user = await this.authModel.findOne({
       name: loginParams.name,
     });
@@ -43,11 +43,12 @@ export class AuthService {
       success: true,
       msg: '登录成功！',
       access_token: this.jwtService.sign(payload),
+      id: user._id,
     };
   }
 
   // 注册
-  async register(registerParams: loginParams): Promise<any> {
+  async register(registerParams: userParams): Promise<any> {
     const { name, password } = registerParams;
 
     const user = await this.authModel
@@ -74,7 +75,7 @@ export class AuthService {
   }
 
   // 用户列表
-  async getArtList(query: IQuery = {}): Promise<any[]> {
+  async getUserList(query: IQuery = {}): Promise<any[]> {
     const { pageSize = 15, page = 1 } = query;
     let skip = 0;
     if (page <= 1) {
@@ -92,11 +93,23 @@ export class AuthService {
     return data;
   }
 
-  async removeArtlist(id: idTypes): Promise<any> {
+  async removeUserlist(id: idTypes): Promise<any> {
     await this.authModel.findByIdAndDelete(id);
     return {
       msg: '删除成功',
       success: true,
     };
+  }
+
+  async updateUserInfo(updateBody: userParams): Promise<any> {
+    await this.authModel.findByIdAndUpdate(updateBody.id, updateBody);
+    return {
+      msg: '修改成功',
+      success: true,
+    };
+  }
+
+  async getOneUserInfo(id: string): Promise<any> {
+    return this.authModel.findById(id);
   }
 }
