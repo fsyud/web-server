@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Comment } from './comment.schema';
 import { Home } from './../home/home.schema';
 import { Auth } from './../auth/auth.schema';
-import { CommentPostDto } from './comment.dto';
+import { CommentPostDto, secondCommentDto } from './comment.dto';
 
 @Injectable()
 export class CommentService {
@@ -26,9 +26,6 @@ export class CommentService {
 
   async addOneComment(commentPost: CommentPostDto): Promise<any> {
     const { article_id, user_id } = commentPost;
-
-    console.log(commentPost);
-
     const midCreate: any = {
       ...commentPost,
       ...{
@@ -40,18 +37,13 @@ export class CommentService {
 
     if (data) {
       const userInfo = await this.authModel.findById(user_id);
-
-      console.log(userInfo);
-
       const { username, avator_url, _id, type = 1 } = userInfo;
-
       midCreate.oneComment = {
         user_id: _id,
         user_name: username,
         type,
         avatar: avator_url,
       };
-
       const commentSave = await new this.commentModel(midCreate).save();
 
       if (commentSave) {
@@ -71,36 +63,41 @@ export class CommentService {
     };
   }
 
-  async addTwoComment(commentPost: CommentPostDto): Promise<any> {
-    const { article_id } = commentPost;
-    console.log(commentPost);
+  async addTwoComment(commentPost: secondCommentDto): Promise<any> {
+    const { article_id, reply_content, reply_to_user_id, user_id } =
+      commentPost;
 
     const data = await this.homeModel.findById(article_id);
 
-    const midCreate: any = {
-      ...commentPost,
-      ...{
-        create_times: moment().format(),
-      },
-    };
+    let obj: any = {};
 
     if (data) {
-      const userInfo = await this.authModel.findById(article_id);
+      const userInfo = await this.authModel.findById(user_id);
 
-      console.log(userInfo);
+      obj.user = {
+        user_id,
+        user_name: userInfo.username,
+        type: 2,
+        avatar: userInfo.avator_url,
+      };
 
-      // const {
-      //   author_user_info: { username, avator_url, _id, type = 1 },
-      // } = data;
+      const toUserInfo = await this.authModel.findById(reply_to_user_id);
 
-      // midCreate.oneComment = {
-      //   user_id: _id,
-      //   user_name: username,
-      //   type,
-      //   avatar: avator_url,
-      // };
+      obj.to_user = {
+        user_id: reply_to_user_id,
+        user_name: toUserInfo.username,
+        type: 2,
+        avatar: toUserInfo.avator_url,
+      };
 
-      // const commentSave = await new this.commentModel(midCreate).save();
+      obj = {
+        ...obj,
+        ...{ reply_content, state: 0, create_times: moment().format() },
+      };
+
+      // const commentSave = await new this.commentModel({
+      //   secondCommit: obj,
+      // }).save();
 
       // if (commentSave) {
       //   await this.homeModel.findByIdAndUpdate(article_id, {

@@ -1,7 +1,7 @@
 import { Controller, Body, Post } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CommentService } from './comment.service';
-import { CommentPostDto } from './comment.dto';
+import { CommentPostDto, secondCommentDto } from './comment.dto';
 
 @Controller('comment')
 @ApiTags('评论')
@@ -22,7 +22,7 @@ export class CommentController {
 
   @Post('addTwo')
   @ApiOperation({ summary: '添加二级评论' })
-  async addTwo(@Body() commentPost: CommentPostDto): Promise<any> {
+  async addTwo(@Body() commentPost: secondCommentDto): Promise<any> {
     return this.commentSerivce.addTwoComment(commentPost);
   }
 }

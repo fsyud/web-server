@@ -5,3 +5,8 @@ export class CommentPostDto {
 
   content: string;
 }
+
+export class secondCommentDto extends CommentPostDto {
+  reply_content: string;
+  reply_to_user_id: string;
+}
