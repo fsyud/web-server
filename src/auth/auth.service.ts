@@ -46,6 +46,7 @@ export class AuthService {
       msg: '登录成功！',
       access_token: this.jwtService.sign(payload),
       id: user._id,
+      user_info: user,
     };
   }
 
