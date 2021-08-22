@@ -29,4 +29,4 @@ export class Auth extends Document {
   introduce: string;
 }
 
-export const LoginSchema = SchemaFactory.createForClass(Auth);
+export const AuthSchema = SchemaFactory.createForClass(Auth);

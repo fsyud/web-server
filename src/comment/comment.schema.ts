@@ -10,12 +10,12 @@ export class CommitProps extends Document {
   user_id: string;
 
   @Prop({ default: '' })
-  name: string;
+  user_name: string;
 
   @Prop({ default: 1 })
   type: number;
 
-  @Prop({ default: 'user' })
+  @Prop()
   avatar: string;
 }
 
@@ -86,7 +86,7 @@ export class Comment extends Document {
     user_id: any;
 
     // 名字
-    name: string;
+    user_name: string;
 
     // 用户类型 0：博主 1：其他用户
     type: number;
@@ -102,7 +102,7 @@ export class Comment extends Document {
       user_id: string;
 
       // 名字
-      name: string;
+      user_name: string;
 
       // 用户类型 0：博主 1：其他用户
       type: number;
@@ -115,7 +115,7 @@ export class Comment extends Document {
       user_id: string;
 
       // 名字
-      name: string;
+      user_name: string;
 
       // 用户类型 0：博主 1：其他用户
       type: number;

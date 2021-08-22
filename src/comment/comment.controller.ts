@@ -19,4 +19,10 @@ export class CommentController {
   async addOne(@Body() commentPost: CommentPostDto): Promise<any> {
     return this.commentSerivce.addOneComment(commentPost);
   }
+
+  @Post('addTwo')
+  @ApiOperation({ summary: '添加二级评论' })
+  async addTwo(@Body() commentPost: CommentPostDto): Promise<any> {
+    return this.commentSerivce.addTwoComment(commentPost);
+  }
 }

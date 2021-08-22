@@ -25,7 +25,7 @@ export class CommentService {
   async addOneComment(commentPost: CommentPostDto): Promise<any> {
     const { article_id } = commentPost;
 
-    const midCreate = {
+    const midCreate: any = {
       ...commentPost,
       ...{
         create_times: moment().format(),
@@ -35,16 +35,73 @@ export class CommentService {
     const data = await this.homeModel.findById(article_id);
 
     if (data) {
-      await this.homeModel.findByIdAndUpdate(article_id, {
-        meta: {
-          comments: data.meta.comments + 1,
-          views: data.meta.views,
-          likes: data.meta.likes,
-        },
-      });
+      const {
+        author_user_info: { username, avator_url, _id, type = 1 },
+      } = data;
+
+      midCreate.oneComment = {
+        user_id: _id,
+        user_name: username,
+        type,
+        avatar: avator_url,
+      };
+
+      const commentSave = await new this.commentModel(midCreate).save();
+
+      if (commentSave) {
+        await this.homeModel.findByIdAndUpdate(article_id, {
+          meta: {
+            comments: data.meta.comments + 1,
+            views: data.meta.views,
+            likes: data.meta.likes,
+          },
+        });
+      }
     }
 
-    await new this.commentModel(midCreate).save();
+    return {
+      msg: '评论成功',
+      success: true,
+    };
+  }
+
+  async addTwoComment(commentPost: CommentPostDto): Promise<any> {
+    const { article_id } = commentPost;
+
+    const data = await this.homeModel.findById(article_id);
+
+    const midCreate: any = {
+      ...commentPost,
+      ...{
+        create_times: moment().format(),
+      },
+    };
+
+    if (data) {
+      const {
+        author_user_info: { username, avator_url, _id, type = 1 },
+      } = data;
+
+      midCreate.oneComment = {
+        user_id: _id,
+        user_name: username,
+        type,
+        avatar: avator_url,
+      };
+
+      const commentSave = await new this.commentModel(midCreate).save();
+
+      if (commentSave) {
+        await this.homeModel.findByIdAndUpdate(article_id, {
+          meta: {
+            comments: data.meta.comments + 1,
+            views: data.meta.views,
+            likes: data.meta.likes,
+          },
+        });
+      }
+    }
+
     return {
       msg: '评论成功',
       success: true,

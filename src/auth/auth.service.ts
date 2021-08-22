@@ -107,19 +107,16 @@ export class AuthService {
     await this.authModel.findByIdAndUpdate(updateBody.id, updateBody);
 
     // 更新文章列表的用户信息
-    const data: any = await this.homeModel
-      .findOne()
-      .where({ 'author_user_info._id': updateBody.id })
-      .exec();
-
+    const data = await this.authModel.findById(updateBody.id);
     if (data) {
-      const midObj = data.author_user_info;
-      midObj.username = updateBody.username;
-      await this.homeModel.findByIdAndUpdate(data._id, {
-        author_user_info: midObj,
-      });
+      const midData = { ...data, ...updateBody };
+      await this.homeModel.updateMany(
+        {
+          'author_user_info._id': updateBody.id,
+        },
+        { author_user_info: midData },
+      );
     }
-
     return {
       msg: '修改成功',
       success: true,

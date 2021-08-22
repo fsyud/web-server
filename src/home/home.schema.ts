@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Auth, AuthSchema } from './../auth/auth.schema';
 import { Document } from 'mongoose';
 
 export type HomeDocument = Home & Document;
@@ -16,37 +17,7 @@ export class metaApi extends Document {
   comments: number;
 }
 
-@Schema()
-export class authInfoApi extends Document {
-  // 其他元信息
-  @Prop()
-  name: string;
-
-  @Prop()
-  password: string;
-
-  @Prop()
-  type: string;
-
-  @Prop()
-  username: string;
-
-  @Prop()
-  avator_url: string;
-
-  @Prop()
-  job: string;
-
-  @Prop()
-  company: string;
-
-  @Prop()
-  introduce: string;
-}
-
 export const metaApiSchema = SchemaFactory.createForClass(metaApi);
-export const authInfoApiSchema = SchemaFactory.createForClass(authInfoApi);
-
 @Schema()
 export class Home extends Document {
   @Prop({ required: true })
@@ -92,24 +63,8 @@ export class Home extends Document {
 
   user_id: string;
 
-  @Prop({ required: true, type: authInfoApiSchema })
-  author_user_info: {
-    name?: string;
-
-    password?: string;
-
-    type?: string;
-
-    username?: string;
-
-    avator_url?: string;
-
-    job?: string;
-
-    company?: string;
-
-    introduce?: string;
-  };
+  @Prop({ required: true, type: AuthSchema, ref: 'Auth' })
+  author_user_info: Auth;
 }
 
 export const HomeSchema = SchemaFactory.createForClass(Home);
