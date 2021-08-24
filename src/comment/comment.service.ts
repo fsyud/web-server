@@ -24,6 +24,7 @@ export class CommentService {
     return data;
   }
 
+  // 一级评论
   async addOneComment(commentPost: CommentPostDto): Promise<any> {
     const { article_id, user_id } = commentPost;
     const midCreate: any = {
@@ -44,6 +45,7 @@ export class CommentService {
         type,
         avatar: avator_url,
       };
+
       const commentSave = await new this.commentModel(midCreate).save();
 
       if (commentSave) {
@@ -63,51 +65,69 @@ export class CommentService {
     };
   }
 
+  // 二级评论
   async addTwoComment(commentPost: secondCommentDto): Promise<any> {
-    const { article_id, reply_content, reply_to_user_id, user_id } =
+    const { article_id, reply_content, reply_to_user_id, user_id, commit_id } =
       commentPost;
 
-    const data = await this.homeModel.findById(article_id);
+    const data: any = await this.homeModel.findById(article_id);
 
     let obj: any = {};
 
-    if (data) {
-      const userInfo = await this.authModel.findById(user_id);
-
-      obj.user = {
-        user_id,
-        user_name: userInfo.username,
-        type: 2,
-        avatar: userInfo.avator_url,
+    if (!data) {
+      return {
+        msg: '该文章已删除！',
+        success: true,
       };
+    }
 
-      const toUserInfo = await this.authModel.findById(reply_to_user_id);
+    const commentInfo = await this.commentModel.findById(commit_id);
 
-      obj.to_user = {
-        user_id: reply_to_user_id,
-        user_name: toUserInfo.username,
-        type: 2,
-        avatar: toUserInfo.avator_url,
+    if (!commentInfo) {
+      return {
+        msg: '该评论已删除！',
+        success: true,
       };
+    }
 
-      obj = {
-        ...obj,
-        ...{ reply_content, state: 0, create_times: moment().format() },
-      };
+    const userInfo = await this.authModel.findById(user_id);
 
-      // const commentSave = await new this.commentModel({
-      //   secondCommit: obj,
-      // }).save();
+    obj.user = {
+      user_id,
+      user_name: userInfo.username,
+      type: 2,
+      avatar: userInfo.avator_url,
+    };
 
-      // if (commentSave) {
-      //   await this.homeModel.findByIdAndUpdate(article_id, {
-      //     meta: {
-      //       comments: data.meta.comments + 1,
-      //       views: data.meta.views,
-      //       likes: data.meta.likes,
-      //     },
-      //   });
-      // }
+    const toUserInfo = await this.authModel.findById(reply_to_user_id);
+
+    obj.to_user = {
+      user_id: reply_to_user_id,
+      user_name: toUserInfo.username,
+      type: 2,
+      avatar: toUserInfo.avator_url,
+    };
+
+    obj = {
+      ...obj,
+      ...{ reply_content, state: 0, create_times: moment().format() },
+    };
+
+    commentInfo.secondCommit.push(obj);
+
+    const commentUpdateOne = await this.commentModel.findByIdAndUpdate(
+      commit_id,
+      commentInfo,
+    );
+
+    if (commentUpdateOne) {
+      await this.homeModel.findByIdAndUpdate(article_id, {
+        meta: {
+          comments: data.meta.comments + 1,
+          views: data.meta.views,
+          likes: data.meta.likes,
+        },
+      });
     }
 
     return {

@@ -17,37 +17,39 @@ export class CommitProps extends Document {
 
   @Prop()
   avatar: string;
+
+  to_user_content?: string;
 }
 
+export const CommitPropsSchema = SchemaFactory.createForClass(CommitProps);
 @Schema()
 export class secondCommitUserProps extends Document {
-  @Prop({ type: CommitProps })
-  user: string;
+  @Prop({ type: CommitPropsSchema })
+  user: any;
 
-  @Prop({ type: CommitProps })
-  to_user: string;
+  @Prop({ type: CommitPropsSchema })
+  to_user: any;
 
   @Prop({ default: 0 })
   likes: number;
 
   @Prop({ validate: /\S+/ })
-  reply_content: number;
+  reply_content: string;
 
   @Prop({ default: 1 })
   state: number;
 
   @Prop({})
-  create_time: string;
+  create_times: string;
 }
 
-export const CommitPropsSchema = SchemaFactory.createForClass(CommitProps);
 export const secondCommitUserPropsSchema = SchemaFactory.createForClass(
   secondCommitUserProps,
 );
 
 @Schema()
 export class Comment extends Document {
-  @Prop({ type: mongoose.Schema.Types.ObjectId })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'HomeSchema' })
   article_id: any;
 
   @Prop({ validate: /\S+/ })
@@ -59,12 +61,6 @@ export class Comment extends Document {
   // 被赞数
   @Prop({ default: 0 })
   likes: number;
-
-  @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'HomeSchema',
-  })
-  user_id: string;
 
   // 状态 => 0 待审核 / 1 通过正常 / -1 已删除 / -2 垃圾评论
   @Prop({ default: 1 })
@@ -80,10 +76,10 @@ export class Comment extends Document {
 
   // 一级评论
   @Prop({ type: CommitPropsSchema })
-  oneComment: any;
+  oneComment: CommitProps;
 
-  @Prop({ type: secondCommitUserPropsSchema })
-  secondCommit: any;
+  @Prop({ required: true, type: [secondCommitUserPropsSchema] })
+  secondCommit: secondCommitUserProps[];
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

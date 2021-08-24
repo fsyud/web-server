@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Auth, AuthSchema } from './../auth/auth.schema';
+import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
 
 export type HomeDocument = Home & Document;
-
 @Schema()
 export class metaApi extends Document {
   // 其他元信息
@@ -61,6 +61,7 @@ export class Home extends Document {
   // 更新时间
   update_times: string;
 
+  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Auth' })
   user_id: string;
 
   @Prop({ required: true, type: AuthSchema, ref: 'Auth' })

@@ -55,7 +55,7 @@ export class HomeSerivce {
       .where(where)
       .limit(pageSize)
       .select(
-        'img_url type state tags title keyword author meta create_times update_times desc author_user_info',
+        'img_url user_id type state tags title keyword author meta create_times update_times desc author_user_info',
       )
       .skip(skip * pageSize)
       .sort(sort)

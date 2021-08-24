@@ -9,4 +9,5 @@ export class CommentPostDto {
 export class secondCommentDto extends CommentPostDto {
   reply_content: string;
   reply_to_user_id: string;
+  commit_id: string;
 }
