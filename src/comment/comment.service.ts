@@ -38,12 +38,12 @@ export class CommentService {
 
     if (data) {
       const userInfo = await this.authModel.findById(user_id);
-      const { username, avator_url, _id, type = 1 } = userInfo;
+      const { username, avatar_url, _id, type = 1 } = userInfo;
       midCreate.oneComment = {
         user_id: _id,
         user_name: username,
         type,
-        avatar: avator_url,
+        avatar: avatar_url,
       };
 
       const commentSave = await new this.commentModel(midCreate).save();
@@ -95,8 +95,8 @@ export class CommentService {
     obj.user = {
       user_id,
       user_name: userInfo.username,
-      type: 2,
-      avatar: userInfo.avator_url,
+      type: userInfo.type,
+      avatar: userInfo.avatar_url,
     };
 
     const toUserInfo = await this.authModel.findById(reply_to_user_id);
@@ -104,8 +104,8 @@ export class CommentService {
     obj.to_user = {
       user_id: reply_to_user_id,
       user_name: toUserInfo.username,
-      type: 2,
-      avatar: toUserInfo.avator_url,
+      type: userInfo.type,
+      avatar: toUserInfo.avatar_url,
     };
 
     obj = {

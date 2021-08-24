@@ -10,14 +10,15 @@ export class Auth extends Document {
   @Prop({ required: true })
   password: string;
 
-  @Prop()
+  // 1 => 博主 2 => 游客
+  @Prop({ required: true })
   type: string;
 
   @Prop()
   username: string;
 
   @Prop()
-  avator_url: string;
+  avatar_url: string;
 
   @Prop()
   job: string;

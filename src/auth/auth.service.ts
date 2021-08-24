@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { Auth } from './auth.schema';
 import { Home } from './../home/home.schema';
+import { Comment } from './../comment/comment.schema';
 import { userParams } from './auth.dto';
 import { MD5_SUFFIX, md5 } from '../utils';
 import { IQuery } from './../utils/query.decorator';
@@ -15,6 +16,7 @@ export class AuthService {
   constructor(
     @InjectModel(Auth.name) private readonly authModel: Model<Auth>,
     @InjectModel(Home.name) private readonly homeModel: Model<Home>,
+    @InjectModel(Comment.name) private readonly commentModel: Model<Comment>,
     // 引入 JwtService
     private readonly jwtService: JwtService,
   ) {}
@@ -52,7 +54,7 @@ export class AuthService {
 
   // 注册
   async register(registerParams: userParams): Promise<any> {
-    const { name, password } = registerParams;
+    const { name, password, type } = registerParams;
 
     const user = await this.authModel
       .findOne({
@@ -68,6 +70,7 @@ export class AuthService {
     const hushPassword = {
       name,
       password: md5(password + MD5_SUFFIX),
+      type,
     };
 
     await new this.authModel(hushPassword).save();
