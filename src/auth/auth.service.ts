@@ -110,9 +110,10 @@ export class AuthService {
   async updateUserInfo(updateBody: userParams): Promise<any> {
     await this.authModel.findByIdAndUpdate(updateBody.id, updateBody);
 
-    // 更新文章列表的用户信息
     const data = await this.authModel.findById(updateBody.id);
+
     if (data) {
+      // 更新文章列表的用户信息
       const midData = { ...data, ...updateBody };
       await this.homeModel.updateMany(
         {
@@ -120,11 +121,62 @@ export class AuthService {
         },
         { author_user_info: midData },
       );
+      // 一级评论更新用户信息
+      await this.commentModel.updateMany(
+        { 'oneComment.user_id': updateBody.id },
+        { 'oneComment.user_name': updateBody.username },
+      );
+      // 二级评论更新用户信息
+      await this.commentModel.updateMany(
+        { 'secondCommit.user.user_id': { $eq: updateBody.id } },
+        {
+          $set: { 'secondCommit.$[elem].user.user_name': updateBody.username },
+        },
+        {
+          arrayFilters: [{ 'elem.user.user_id': { $eq: updateBody.id } }],
+          multi: true,
+        },
+      );
+      // 三级评论更新用户信息
+      await this.commentModel.updateMany(
+        { 'secondCommit.to_user.user_id': { $eq: updateBody.id } },
+        {
+          $set: {
+            'secondCommit.$[elem].to_user.user_name': updateBody.username,
+          },
+        },
+        {
+          arrayFilters: [{ 'elem.to_user.user_id': { $eq: updateBody.id } }],
+          multi: true,
+        },
+      );
     }
+
     return {
       msg: '修改成功',
       success: true,
     };
+  }
+
+  // 刷新 token
+  refreshToken(users: any) {
+    const payload = { name: users.name, sub: users._id };
+    console.log(payload);
+    return this.jwtService.sign(payload);
+  }
+
+  // 校验 token
+  verifyToken(token: string): any {
+    try {
+      // 未登录
+      if (token.includes('null')) return 0;
+      // 验证token合法性
+      const obj = this.jwtService.verify(token.replace('Bearer ', ''));
+      return obj;
+    } catch (error) {
+      // 捕获token过期
+      return error.name;
+    }
   }
 
   async getOneUserInfo(id: string): Promise<any> {

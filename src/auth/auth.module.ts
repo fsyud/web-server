@@ -16,7 +16,7 @@ import { SECRET } from './secret';
     // 引入 Jwt 模块并配置秘钥和有效时长
     JwtModule.register({
       secret: SECRET,
-      signOptions: { expiresIn: '1000000h' },
+      signOptions: { expiresIn: '72h' },
     }),
   ],
   controllers: [LoginController],

@@ -16,7 +16,7 @@ export class CommentService {
   ) {}
 
   async getCommentList(getCommit: { article_id: string }): Promise<any> {
-    const data = await this.commentModel
+    const data: any = await this.commentModel
       .find()
       .where({ article_id: getCommit.article_id })
       .sort({ create_times: -1 })

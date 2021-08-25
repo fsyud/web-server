@@ -11,6 +11,7 @@ export interface IQuery {
   populate?: string | any;
   select?: string | any;
   collation?: QueryOptions['collation'];
+  filter?: any;
 }
 
 export const CrudQuery = createParamDecorator(

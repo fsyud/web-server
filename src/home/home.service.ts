@@ -42,7 +42,13 @@ export class HomeSerivce {
   }
 
   async getArtList(query: IQuery = {}): Promise<any[]> {
-    const { pageSize = 15, page = 1, where = {}, sort = {} } = query;
+    const {
+      pageSize = 15,
+      page = 1,
+      where = {},
+      sort = {},
+      filter = {},
+    } = query;
     let skip = 0;
     if (page <= 1) {
       skip == 0;
@@ -51,7 +57,7 @@ export class HomeSerivce {
     }
 
     const data = await this.homeModel
-      .find()
+      .find(filter)
       .where(where)
       .limit(pageSize)
       .select(
@@ -84,7 +90,14 @@ export class HomeSerivce {
   }
 
   async updateArtlist(id: idTypes, updataContent: UpdatePostDto): Promise<any> {
-    await this.homeModel.findByIdAndUpdate(id, updataContent);
+    const midCreate: any = {
+      ...updataContent,
+      ...{
+        update_times: moment().format(),
+      },
+    };
+
+    await this.homeModel.updateOne({ _id: updataContent._id }, midCreate);
     return {
       success: true,
     };
