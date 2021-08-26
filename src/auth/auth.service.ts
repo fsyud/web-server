@@ -159,25 +159,25 @@ export class AuthService {
   }
 
   // 刷新 token
-  refreshToken(users: any) {
-    const payload = { name: users.name, sub: users._id };
-    console.log(payload);
-    return this.jwtService.sign(payload);
-  }
+  // refreshToken(users: any) {
+  //   const payload = { name: users.name, sub: users._id };
+  //   console.log(payload);
+  //   return this.jwtService.sign(payload);
+  // }
 
   // 校验 token
-  verifyToken(token: string): any {
-    try {
-      // 未登录
-      if (token.includes('null')) return 0;
-      // 验证token合法性
-      const obj = this.jwtService.verify(token.replace('Bearer ', ''));
-      return obj;
-    } catch (error) {
-      // 捕获token过期
-      return error.name;
-    }
-  }
+  // verifyToken(token: string): any {
+  //   try {
+  //     // 未登录
+  //     if (token.includes('null')) return 0;
+  //     // 验证token合法性
+  //     const obj = this.jwtService.verify(token.replace('Bearer ', ''));
+  //     return obj;
+  //   } catch (error) {
+  //     // 捕获token过期
+  //     return error.name;
+  //   }
+  // }
 
   async getOneUserInfo(id: string): Promise<any> {
     return this.authModel.findById(id);
