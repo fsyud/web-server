@@ -33,7 +33,7 @@ export class HomeController {
     return this.homeSerivce.getOneDetail(id);
   }
 
-  @Put('update')
+  @Post('updates')
   @ApiOperation({ summary: '编辑文章' })
   update(@Body() updateBody: UpdatePostDto) {
     return this.homeSerivce.updateArtlist(updateBody._id, updateBody);

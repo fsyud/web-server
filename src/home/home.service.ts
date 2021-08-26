@@ -74,6 +74,8 @@ export class HomeSerivce {
     const find = async () => {
       const data = await this.homeModel.findById(id);
 
+      console.log(data);
+
       if (data) {
         await this.homeModel.findByIdAndUpdate(id, {
           meta: {
@@ -96,8 +98,7 @@ export class HomeSerivce {
         update_times: moment().format(),
       },
     };
-
-    await this.homeModel.updateOne({ _id: updataContent._id }, midCreate);
+    await this.homeModel.findByIdAndUpdate(id, midCreate);
     return {
       success: true,
     };
