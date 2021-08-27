@@ -74,8 +74,6 @@ export class HomeSerivce {
     const find = async () => {
       const data = await this.homeModel.findById(id);
 
-      console.log(data);
-
       if (data) {
         await this.homeModel.findByIdAndUpdate(id, {
           meta: {
@@ -113,10 +111,12 @@ export class HomeSerivce {
   }
 
   async hotArticle(): Promise<any> {
-    return await this.homeModel
+    const find = await this.homeModel
       .find()
-      .sort({ views: 1 })
+      .sort({ 'meta.views': -1 })
       .select('title')
       .exec();
+
+    return find;
   }
 }
