@@ -58,9 +58,6 @@ export class Comment extends Document {
   @Prop({})
   name: string;
 
-  @Prop()
-  total: number;
-
   // 被赞数
   @Prop({ default: 0 })
   likes: number;

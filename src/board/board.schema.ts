@@ -19,6 +19,9 @@ export class CommitProps extends Document {
   avatar: string;
 
   to_user_content?: string;
+
+  @Prop({})
+  create_times: string;
 }
 
 export const CommitPropsSchema = SchemaFactory.createForClass(CommitProps);
@@ -49,7 +52,8 @@ export const secondCommitUserPropsSchema = SchemaFactory.createForClass(
 );
 
 export class Board extends Document {
-  @Prop({})
+  // 标签
+  @Prop({ required: true })
   tag: string;
 
   @Prop({})
