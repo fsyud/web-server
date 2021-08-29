@@ -3,3 +3,9 @@ export class awhilePostDto {
   content: string;
   tag: number;
 }
+
+export class secondawhileDto extends awhilePostDto {
+  reply_content: string;
+  reply_to_user_id: string;
+  awhile_id: string;
+}

@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { Model } from 'mongoose';
 import { Auth } from '../auth/auth.schema';
 import { Awhile, AwhileDocument } from './awhile.schema';
-import { awhilePostDto } from './awhile.dto';
+import { awhilePostDto, secondawhileDto } from './awhile.dto';
 
 @Injectable()
 export class AwhileService {
@@ -20,7 +20,12 @@ export class AwhileService {
     page?: number;
     pageSize?: number;
   }): Promise<any> {
-    const { sort = { create_times: -1 }, tag, pageSize = 20, page } = getAwhile;
+    const {
+      sort = { 'oneWhile.create_times': -1 },
+      tag,
+      pageSize = 20,
+      page,
+    } = getAwhile;
     let wheres: any = {};
     let skip = 0;
     if (tag === 999) {
@@ -28,8 +33,6 @@ export class AwhileService {
     } else {
       wheres.tag = getAwhile.tag;
     }
-
-    console.log(wheres);
 
     if (page <= 1) {
       skip == 0;
@@ -47,6 +50,7 @@ export class AwhileService {
     return data;
   }
 
+  // 一级时刻
   async addOneAwhile(awhilePost: awhilePostDto): Promise<any> {
     const { user_id, content, tag } = awhilePost;
 
@@ -68,6 +72,10 @@ export class AwhileService {
         state: 1,
         is_handle: 2,
         oneWhile,
+        meta: {
+          likes: 0,
+          comments: 0,
+        },
       };
 
       if (!tag) {
@@ -80,6 +88,63 @@ export class AwhileService {
 
     return {
       msg: '发布成功',
+      success: true,
+    };
+  }
+
+  // 二级时刻
+  async addTwoAwhile(awhilePost: secondawhileDto): Promise<any> {
+    const { content, reply_to_user_id, user_id, awhile_id } = awhilePost;
+
+    let obj: any = {};
+
+    const awhileInfo: any = await this.awhileModel.findById(awhile_id);
+
+    if (!awhileInfo) {
+      return {
+        msg: '该评论已删除！',
+        success: true,
+      };
+    }
+
+    const userInfo: any = await this.authModel.findById(user_id);
+
+    const toUserInfo = await this.authModel.findById(reply_to_user_id);
+
+    if (!userInfo || !toUserInfo) {
+      return;
+    }
+
+    obj.user = {
+      user_id,
+      user_name: userInfo.username,
+      type: userInfo.type,
+      avatar: userInfo.avatar_url,
+    };
+
+    obj.to_user = {
+      user_id: reply_to_user_id,
+      user_name: toUserInfo.username,
+      type: userInfo.type,
+      avatar: toUserInfo.avatar_url,
+    };
+
+    obj = {
+      ...obj,
+      ...{ reply_content: content, state: 0, create_times: moment().format() },
+    };
+
+    awhileInfo.secondWhile.push(obj);
+
+    awhileInfo.meta = {
+      comments: awhileInfo.meta.comments + 1,
+      likes: awhileInfo.meta.likes,
+    };
+
+    await this.awhileModel.findByIdAndUpdate(awhile_id, awhileInfo);
+
+    return {
+      msg: '回复成功！',
       success: true,
     };
   }

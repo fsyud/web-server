@@ -48,7 +48,7 @@ export class secondWhileUserProps extends Document {
   @Prop({ validate: /\S+/ })
   reply_content: string;
 
-  @Prop({ default: 1 })
+  @Prop({ default: 0 })
   state: number;
 
   @Prop({})
@@ -59,6 +59,18 @@ export const secondAwhileUserPropsSchema =
   SchemaFactory.createForClass(secondWhileUserProps);
 
 export type AwhileDocument = Awhile & Document;
+
+@Schema()
+export class metaApi extends Document {
+  // 其他元信息
+  @Prop({ default: 0 })
+  likes: number;
+
+  @Prop({ default: 0 })
+  comments: number;
+}
+
+export const metaApiDocument = SchemaFactory.createForClass(metaApi);
 
 @Schema()
 export class Awhile {
@@ -76,6 +88,9 @@ export class Awhile {
   // 是否已经处理过 => 1 是 / 2 否 ；新加的评论需要审核，防止用户添加 垃圾评论
   @Prop({ required: true, default: 2 })
   is_handle: number;
+
+  @Prop({ required: true, type: metaApiDocument })
+  meta: metaApi;
 
   // 一级评论
   @Prop({ required: true, type: AwhilePropsSchema })

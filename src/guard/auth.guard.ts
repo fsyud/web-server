@@ -20,6 +20,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       '/home/hot',
       '/common/upload',
       '/comment/list',
+      '/awhile/list',
     ];
 
     if (whitelist.find((url) => request.url.includes(url))) {
