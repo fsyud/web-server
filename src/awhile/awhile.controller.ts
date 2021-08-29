@@ -10,13 +10,13 @@ export class AwhileController {
 
   @Post('list')
   @ApiOperation({ summary: '获取时刻列表' })
-  async getList(@Body() getBoard: { tag?: number }): Promise<any> {
-    return this.awhileService.getAwhileList(getBoard);
+  async getList(@Body() getAwhile: { tag?: number }): Promise<any> {
+    return this.awhileService.getAwhileList(getAwhile);
   }
 
   @Post('addOne')
   @ApiOperation({ summary: '添加一级时刻' })
-  async addOne(@Body() boardPost: awhilePostDto): Promise<any> {
-    return this.awhileService.addOneAwhile(boardPost);
+  async addOne(@Body() awhilePost: awhilePostDto): Promise<any> {
+    return this.awhileService.addOneAwhile(awhilePost);
   }
 }

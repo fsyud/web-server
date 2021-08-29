@@ -35,6 +35,7 @@ export class HomeSerivce {
     const user = await this.authModel.findById(createPost.user_id);
     midCreate.author_user_info = user || {};
     await new this.homeModel(midCreate).save();
+
     return {
       msg: '发布成功',
       success: true,

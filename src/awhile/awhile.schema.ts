@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
+import { Document } from 'mongoose';
 
 // 一级时刻
 @Schema()
@@ -9,12 +9,14 @@ export class AwhileProps extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId })
   user_id: string;
 
+  @Prop({ required: true })
   user_name: string;
 
   // 状态 => 0 待审核 / 1 通过正常 / -1 已删除 / -2 垃圾评论
   @Prop({ default: 1 })
   type: number;
 
+  @Prop({ required: true })
   content: string;
 
   @Prop()
@@ -56,12 +58,15 @@ export class secondWhileUserProps extends Document {
 export const secondAwhileUserPropsSchema =
   SchemaFactory.createForClass(secondWhileUserProps);
 
-export class Awhile extends Document {
+export type AwhileDocument = Awhile & Document;
+
+@Schema()
+export class Awhile {
   // 标签
   @Prop({ required: true })
   tag: number;
 
-  @Prop({})
+  @Prop({ default: 'awhile' })
   name: string;
 
   // 状态 => 0 待审核 / 1 通过正常 / -1 已删除 / -2 垃圾评论

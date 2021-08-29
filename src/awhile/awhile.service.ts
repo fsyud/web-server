@@ -3,27 +3,52 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as moment from 'moment';
 import { Model } from 'mongoose';
 import { Auth } from '../auth/auth.schema';
-import { Awhile } from './awhile.schema';
+import { Awhile, AwhileDocument } from './awhile.schema';
 import { awhilePostDto } from './awhile.dto';
 
 @Injectable()
 export class AwhileService {
   constructor(
-    @InjectModel(Awhile.name) private readonly awhileModel: Model<Awhile>,
+    @InjectModel(Awhile.name)
+    private readonly awhileModel: Model<AwhileDocument>,
     @InjectModel(Auth.name) private readonly authModel: Model<Auth>,
   ) {}
 
-  async getAwhileList(getAwhile: { tag?: number }): Promise<any> {
+  async getAwhileList(getAwhile: {
+    tag?: number;
+    sort?: any;
+    page?: number;
+    pageSize?: number;
+  }): Promise<any> {
+    const { sort = { create_times: -1 }, tag, pageSize = 20, page } = getAwhile;
+    let wheres: any = {};
+    let skip = 0;
+    if (tag === 999) {
+      wheres = {};
+    } else {
+      wheres.tag = getAwhile.tag;
+    }
+
+    console.log(wheres);
+
+    if (page <= 1) {
+      skip == 0;
+    } else {
+      skip = page - 1;
+    }
+
     const data: any = await this.awhileModel
       .find()
-      .where({ tag: getAwhile.tag })
-      .sort({ create_times: -1 })
+      .where(wheres)
+      .limit(pageSize)
+      .skip(skip * pageSize)
+      .sort(sort)
       .exec();
     return data;
   }
 
   async addOneAwhile(awhilePost: awhilePostDto): Promise<any> {
-    const { user_id, content } = awhilePost;
+    const { user_id, content, tag } = awhilePost;
 
     const userInfo: any = await this.authModel.findById(user_id);
 
@@ -40,17 +65,22 @@ export class AwhileService {
       };
 
       const midCreate: any = {
-        tag: awhilePost.tag,
         state: 1,
         is_handle: 2,
         oneWhile,
       };
 
-      console.log(midCreate);
-
-      const awhileSave = await new this.awhileModel(midCreate).save();
-
-      console.log(awhileSave);
+      if (!tag) {
+        midCreate.tag = 999;
+      } else {
+        midCreate.tag = awhilePost.tag;
+      }
+      await new this.awhileModel(midCreate).save();
     }
+
+    return {
+      msg: '发布成功',
+      success: true,
+    };
   }
 }

@@ -7,6 +7,7 @@ import { JwtAuthGuard } from './guard/auth.guard';
 import { CommonModule } from './common/common.module';
 import { CommentModule } from './comment/comment.module';
 import { AwhileModule } from './awhile/awhile.module';
+import { BoardModule } from './board/board.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AwhileModule } from './awhile/awhile.module';
     CommonModule,
     CommentModule,
     AwhileModule,
+    BoardModule,
   ],
   providers: [
     {
