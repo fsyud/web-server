@@ -1,11 +1,22 @@
-import { Controller, Get } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Post, Body } from '@nestjs/common';
+import { AwhileService } from './awhile.service';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { awhilePostDto } from './awhile.dto';
 
 @Controller('awhile')
-@ApiTags('片刻')
+@ApiTags('时刻')
 export class AwhileController {
-  @Get()
-  index() {
-    return [{ a: 1 }, { a: 1 }, { a: 2 }];
+  constructor(private readonly awhileService: AwhileService) {}
+
+  @Post('list')
+  @ApiOperation({ summary: '获取时刻列表' })
+  async getList(@Body() getBoard: { tag?: number }): Promise<any> {
+    return this.awhileService.getAwhileList(getBoard);
+  }
+
+  @Post('addOne')
+  @ApiOperation({ summary: '添加一级时刻' })
+  async addOne(@Body() boardPost: awhilePostDto): Promise<any> {
+    return this.awhileService.addOneAwhile(boardPost);
   }
 }

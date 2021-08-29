@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
 import { HomeModule } from './home/home.module';
-import { AwhileModule } from './awhile/awhile.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guard/auth.guard';
 import { CommonModule } from './common/common.module';
 import { CommentModule } from './comment/comment.module';
-import { BoardModule } from './board/board.module';
+import { AwhileModule } from './awhile/awhile.module';
 
 @Module({
   imports: [
@@ -17,11 +16,10 @@ import { BoardModule } from './board/board.module';
       useCreateIndex: true,
     }),
     HomeModule,
-    AwhileModule,
     AuthModule,
     CommonModule,
     CommentModule,
-    BoardModule,
+    AwhileModule,
   ],
   providers: [
     {
