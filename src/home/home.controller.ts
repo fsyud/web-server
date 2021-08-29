@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Delete,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Delete, Query } from '@nestjs/common';
 import { HomeSerivce } from './home.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { IQuery } from './../utils/query.decorator';

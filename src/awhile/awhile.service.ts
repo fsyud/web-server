@@ -148,4 +148,14 @@ export class AwhileService {
       success: true,
     };
   }
+
+  // 删除一级时刻
+  async removeOneAwhile(id: string): Promise<any> {
+    console.log(id);
+    await this.awhileModel.findByIdAndDelete(id);
+    return {
+      msg: '删除成功',
+      success: true,
+    };
+  }
 }

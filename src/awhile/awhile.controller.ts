@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Delete, Query } from '@nestjs/common';
 import { AwhileService } from './awhile.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { awhilePostDto, secondawhileDto } from './awhile.dto';
@@ -23,7 +23,13 @@ export class AwhileController {
   @Post('addTwo')
   @ApiOperation({ summary: '添加二级时刻' })
   async addTwo(@Body() awhilePost: secondawhileDto): Promise<any> {
-    console.log(awhilePost);
     return this.awhileService.addTwoAwhile(awhilePost);
+  }
+
+  // 删除一级时刻
+  @Delete('removeOne')
+  @ApiOperation({ summary: '删除一级时刻' })
+  async removeOne(@Query('id') id: string): Promise<any> {
+    return this.awhileService.removeOneAwhile(id);
   }
 }
