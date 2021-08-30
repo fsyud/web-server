@@ -7,6 +7,8 @@ import { Home } from './../home/home.schema';
 import { Auth } from './../auth/auth.schema';
 import { CommentPostDto, secondCommentDto } from './comment.dto';
 
+type idTypes = string | number;
+
 @Injectable()
 export class CommentService {
   constructor(
@@ -22,6 +24,59 @@ export class CommentService {
       .sort({ create_times: -1 })
       .exec();
     return data;
+  }
+
+  /**
+   * @description: 获取所有评论
+   * @return {*}
+   */
+  async getAllCommentList(query: {
+    pageSize?: number;
+    page?: number;
+  }): Promise<any> {
+    const { pageSize = 15, page = 1 } = query;
+
+    let skip = 0;
+    if (page <= 1) {
+      skip == 0;
+    } else {
+      skip = page - 1;
+    }
+
+    const data: any = await this.commentModel
+      .find()
+      .where()
+      .limit(pageSize)
+      .sort({ create_times: -1 })
+      .skip(skip * pageSize)
+      .exec();
+    return data;
+  }
+
+  /**
+   * @description: 删除一级评论
+   * @param {idTypes} id
+   * @return {*}
+   */
+  async removeOneComment(id: idTypes): Promise<any> {
+    const commentInfo = await this.commentModel.findById(id);
+
+    const data = await this.homeModel.findById(commentInfo.article_id);
+
+    await this.commentModel.findByIdAndDelete(id);
+
+    await this.homeModel.findByIdAndUpdate(commentInfo.article_id, {
+      meta: {
+        comments: data.meta.comments - 1,
+        views: data.meta.views,
+        likes: data.meta.likes,
+      },
+    });
+
+    return {
+      msg: '删除成功',
+      success: true,
+    };
   }
 
   // 一级评论
@@ -45,6 +100,8 @@ export class CommentService {
         type,
         avatar: avatar_url,
       };
+
+      midCreate.article_title = data.title;
 
       const commentSave = await new this.commentModel(midCreate).save();
 

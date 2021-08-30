@@ -52,6 +52,9 @@ export class Comment extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'HomeSchema' })
   article_id: any;
 
+  @Prop({ required: true })
+  article_title: string;
+
   @Prop({ validate: /\S+/ })
   content: string;
 

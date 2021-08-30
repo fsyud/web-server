@@ -1,4 +1,4 @@
-import { Controller, Body, Post } from '@nestjs/common';
+import { Controller, Body, Post, Delete, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CommentService } from './comment.service';
 import { CommentPostDto, secondCommentDto } from './comment.dto';
@@ -14,10 +14,24 @@ export class CommentController {
     return this.commentSerivce.getCommentList(getCommit);
   }
 
+  @Post('allList')
+  @ApiOperation({ summary: '获取所有评论列表' })
+  async allList(
+    @Body() query: { pageSize?: number; page?: number },
+  ): Promise<any> {
+    return this.commentSerivce.getAllCommentList(query);
+  }
+
   @Post('addOne')
   @ApiOperation({ summary: '添加一级评论' })
   async addOne(@Body() commentPost: CommentPostDto): Promise<any> {
     return this.commentSerivce.addOneComment(commentPost);
+  }
+
+  @Delete('removeOne')
+  @ApiOperation({ summary: '删除一级评论' })
+  removeOne(@Query('id') id: string) {
+    return this.commentSerivce.removeOneComment(id);
   }
 
   @Post('addTwo')

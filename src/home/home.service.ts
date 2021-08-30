@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as moment from 'moment';
 import { Home } from './home.schema';
 import { Auth } from './../auth/auth.schema';
+import { Comment } from './../comment/comment.schema';
 import { CreatePostDto, UpdatePostDto } from './home.dto';
 
 import { IQuery } from './../utils/query.decorator';
@@ -15,8 +16,14 @@ export class HomeSerivce {
   constructor(
     @InjectModel(Home.name) private readonly homeModel: Model<Home>,
     @InjectModel(Auth.name) private readonly authModel: Model<Auth>,
+    @InjectModel(Comment.name) private readonly commentModel: Model<Comment>,
   ) {}
 
+  /**
+   * @description: 创建文章
+   * @param {CreatePostDto} createPost
+   * @return {*}
+   */
   async createPage(createPost: CreatePostDto): Promise<any> {
     const midCreate: any = {
       ...createPost,
@@ -105,6 +112,10 @@ export class HomeSerivce {
 
   async removeArtlist(id: idTypes): Promise<any> {
     await this.homeModel.findByIdAndDelete(id);
+
+    // 删除关联评论
+    await this.commentModel.deleteMany({ article_id: id });
+
     return {
       msg: '删除成功',
       success: true,
