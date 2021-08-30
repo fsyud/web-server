@@ -24,6 +24,9 @@ export class Auth extends Document {
   job: string;
 
   @Prop()
+  author_web: string;
+
+  @Prop()
   company: string;
 
   @Prop()
