@@ -23,7 +23,8 @@ export class Home extends Document {
   @Prop({ required: true })
   img_url: string; // 封面图片
 
-  // 文章发布状态 => 0 草稿，1 已发布
+  // 文章发布状态 => 1 草稿 2 未审核 3 已审核
+  @Prop({ required: true })
   state: number;
 
   tags: string;

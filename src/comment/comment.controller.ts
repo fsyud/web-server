@@ -34,6 +34,14 @@ export class CommentController {
     return this.commentSerivce.removeOneComment(id);
   }
 
+  @Post('auditOne')
+  @ApiOperation({ summary: '审核一级评论' })
+  async auditOne(
+    @Body() auditBody: { id: string; article_id: string },
+  ): Promise<any> {
+    return this.commentSerivce.auditOneComment(auditBody);
+  }
+
   @Post('addTwo')
   @ApiOperation({ summary: '添加二级评论' })
   async addTwo(@Body() commentPost: secondCommentDto): Promise<any> {

@@ -17,10 +17,15 @@ export class CommentService {
     @InjectModel(Auth.name) private readonly authModel: Model<Auth>,
   ) {}
 
+  /**
+   * @description: 获取过滤条件评论列表
+   * @param {object} getCommit
+   * @return {*}
+   */
   async getCommentList(getCommit: { article_id: string }): Promise<any> {
     const data: any = await this.commentModel
       .find()
-      .where({ article_id: getCommit.article_id })
+      .where({ article_id: getCommit.article_id, state: 2 })
       .sort({ create_times: -1 })
       .exec();
     return data;
@@ -54,6 +59,44 @@ export class CommentService {
   }
 
   /**
+   * @description: 创建一级评论
+   * @param {CommentPostDto} commentPost
+   * @return {*}
+   */
+  async addOneComment(commentPost: CommentPostDto): Promise<any> {
+    const { article_id, user_id } = commentPost;
+    const midCreate: any = {
+      ...commentPost,
+      ...{
+        create_times: moment().format(),
+      },
+      ...{ state: 1 },
+    };
+
+    const data = await this.homeModel.findById(article_id);
+
+    if (data) {
+      const userInfo = await this.authModel.findById(user_id);
+      const { username, avatar_url, _id, type = 1 } = userInfo;
+      midCreate.oneComment = {
+        user_id: _id,
+        user_name: username,
+        type,
+        avatar: avatar_url,
+      };
+
+      midCreate.article_title = data.title;
+
+      await new this.commentModel(midCreate).save();
+    }
+
+    return {
+      msg: '评论成功，博主审核中...',
+      success: true,
+    };
+  }
+
+  /**
    * @description: 删除一级评论
    * @param {idTypes} id
    * @return {*}
@@ -79,50 +122,11 @@ export class CommentService {
     };
   }
 
-  // 一级评论
-  async addOneComment(commentPost: CommentPostDto): Promise<any> {
-    const { article_id, user_id } = commentPost;
-    const midCreate: any = {
-      ...commentPost,
-      ...{
-        create_times: moment().format(),
-      },
-    };
-
-    const data = await this.homeModel.findById(article_id);
-
-    if (data) {
-      const userInfo = await this.authModel.findById(user_id);
-      const { username, avatar_url, _id, type = 1 } = userInfo;
-      midCreate.oneComment = {
-        user_id: _id,
-        user_name: username,
-        type,
-        avatar: avatar_url,
-      };
-
-      midCreate.article_title = data.title;
-
-      const commentSave = await new this.commentModel(midCreate).save();
-
-      if (commentSave) {
-        await this.homeModel.findByIdAndUpdate(article_id, {
-          meta: {
-            comments: data.meta.comments + 1,
-            views: data.meta.views,
-            likes: data.meta.likes,
-          },
-        });
-      }
-    }
-
-    return {
-      msg: '评论成功',
-      success: true,
-    };
-  }
-
-  // 二级评论
+  /**
+   * @description: 创建二级评论
+   * @param {secondCommentDto} commentPost
+   * @return {*}
+   */
   async addTwoComment(commentPost: secondCommentDto): Promise<any> {
     const { article_id, reply_content, reply_to_user_id, user_id, commit_id } =
       commentPost;
@@ -189,6 +193,37 @@ export class CommentService {
 
     return {
       msg: '评论成功',
+      success: true,
+    };
+  }
+
+  /**
+   * @description: 一级评论审核
+   * @param {*}
+   * @return {*}
+   */
+  async auditOneComment(auditBody: {
+    id: string;
+    article_id: string;
+  }): Promise<any> {
+    const { id, article_id } = auditBody;
+
+    const data: any = await this.homeModel.findById(article_id);
+
+    await this.commentModel.findByIdAndUpdate(id, {
+      state: 2,
+    });
+
+    await this.homeModel.findByIdAndUpdate(article_id, {
+      meta: {
+        comments: data.meta.comments + 1,
+        views: data.meta.views,
+        likes: data.meta.likes,
+      },
+    });
+
+    return {
+      msg: '审核成功',
       success: true,
     };
   }

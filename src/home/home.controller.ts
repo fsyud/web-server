@@ -37,6 +37,12 @@ export class HomeController {
     return this.homeSerivce.removeArtlist(id);
   }
 
+  @Post('audit')
+  @ApiOperation({ summary: '审核文章' })
+  audit(@Body() auditBody: { id: string }) {
+    return this.homeSerivce.auditArtlist(auditBody);
+  }
+
   @Post('hot')
   @ApiOperation({ summary: '获取热门文章' })
   hot() {

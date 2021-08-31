@@ -13,7 +13,8 @@ export class CreatePostDto {
   img_url?: any;
   @ApiProperty({ description: '文章描述' })
   desc: string;
-
+  @ApiProperty({ description: '文章状态' })
+  state?: string;
   @ApiProperty({ description: '作者id' })
   user_id: string;
 }

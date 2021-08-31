@@ -26,10 +26,11 @@ export class HomeSerivce {
    */
   async createPage(createPost: CreatePostDto): Promise<any> {
     const midCreate: any = {
-      ...createPost,
       ...{
         create_times: moment().format(),
+        state: 2,
       },
+      ...createPost,
       ...{
         meta: {
           views: 0,
@@ -57,6 +58,7 @@ export class HomeSerivce {
       sort = {},
       filter = {},
     } = query;
+
     let skip = 0;
     if (page <= 1) {
       skip == 0;
@@ -66,7 +68,7 @@ export class HomeSerivce {
 
     const data = await this.homeModel
       .find(filter)
-      .where(where)
+      .where({ ...where })
       .limit(pageSize)
       .select(
         'img_url user_id type state tags title keyword author meta create_times update_times desc author_user_info',
@@ -118,6 +120,22 @@ export class HomeSerivce {
 
     return {
       msg: '删除成功',
+      success: true,
+    };
+  }
+
+  /**
+   * @description: 文章审核
+   * @param {idTypes} id
+   * @return {*}
+   */
+  async auditArtlist(auditBody: { id: string }): Promise<any> {
+    await this.homeModel.findByIdAndUpdate(auditBody.id, {
+      state: 3,
+    });
+
+    return {
+      msg: '审核成功',
       success: true,
     };
   }

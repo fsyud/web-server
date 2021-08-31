@@ -36,6 +36,7 @@ export class secondCommitUserProps extends Document {
   @Prop({ validate: /\S+/ })
   reply_content: string;
 
+  // 状态 1 未审核 2 已审核
   @Prop({ default: 1 })
   state: number;
 
@@ -65,13 +66,9 @@ export class Comment extends Document {
   @Prop({ default: 0 })
   likes: number;
 
-  // 状态 => 0 待审核 / 1 通过正常 / -1 已删除 / -2 垃圾评论
+  // 状态 1 未审核 2 已审核
   @Prop({ default: 1 })
   state: number;
-
-  // 是否已经处理过 => 1 是 / 2 否 ；新加的评论需要审核，防止用户添加 垃圾评论
-  @Prop({ default: 2 })
-  is_handle: number;
 
   // 创建时间
   @Prop({})
