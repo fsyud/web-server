@@ -54,7 +54,7 @@ export class AuthService {
 
   // 注册
   async register(registerParams: userParams): Promise<any> {
-    const { name, password, type } = registerParams;
+    const { name, password, type = 2 } = registerParams;
 
     const user = await this.authModel
       .findOne({

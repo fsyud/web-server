@@ -14,6 +14,11 @@ export class AwhileService {
     @InjectModel(Auth.name) private readonly authModel: Model<Auth>,
   ) {}
 
+  /**
+   * @description: 获取时刻所有列表
+   * @param {*}
+   * @return {*}
+   */
   async getAwhileList(getAwhile: {
     tag?: number;
     sort?: any;
@@ -50,7 +55,11 @@ export class AwhileService {
     return data;
   }
 
-  // 一级时刻
+  /**
+   * @description: 添加一级时刻
+   * @param {awhilePostDto} awhilePost
+   * @return {*}
+   */
   async addOneAwhile(awhilePost: awhilePostDto): Promise<any> {
     const { user_id, content, tag } = awhilePost;
 
@@ -92,7 +101,11 @@ export class AwhileService {
     };
   }
 
-  // 二级时刻
+  /**
+   * @description: 添加二级时刻
+   * @param {secondawhileDto} awhilePost
+   * @return {*}
+   */
   async addTwoAwhile(awhilePost: secondawhileDto): Promise<any> {
     const { content, reply_to_user_id, user_id, awhile_id } = awhilePost;
 
@@ -149,7 +162,11 @@ export class AwhileService {
     };
   }
 
-  // 删除一级时刻
+  /**
+   * @description: 删除一级时刻
+   * @param {string} id
+   * @return {*}
+   */
   async removeOneAwhile(id: string): Promise<any> {
     console.log(id);
     await this.awhileModel.findByIdAndDelete(id);
