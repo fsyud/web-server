@@ -2,10 +2,16 @@ import { Model } from 'mongoose';
 import * as moment from 'moment';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as mongoose from 'mongoose';
 import { Comment } from './comment.schema';
 import { Home } from './../home/home.schema';
 import { Auth } from './../auth/auth.schema';
-import { CommentPostDto, secondCommentDto } from './comment.dto';
+import {
+  CommentPostDto,
+  secondCommentDto,
+  auditTwoCommentProps,
+  removeTwoCommentProps,
+} from './comment.dto';
 
 type idTypes = string | number;
 
@@ -23,11 +29,28 @@ export class CommentService {
    * @return {*}
    */
   async getCommentList(getCommit: { article_id: string }): Promise<any> {
+    const { article_id } = getCommit;
     const data: any = await this.commentModel
-      .find()
-      .where({ article_id: getCommit.article_id, state: 2 })
-      .sort({ create_times: -1 })
+      .aggregate()
+      .match({ state: 2, article_id: new mongoose.Types.ObjectId(article_id) })
+      .project({
+        uid: 1,
+        name: 1,
+        content: 1,
+        likes: 1,
+        create_times: 1,
+        oneComment: 1,
+        article_id: 1,
+        secondCommit: {
+          $filter: {
+            input: '$secondCommit',
+            as: 'secondCommit',
+            cond: { $eq: ['$$secondCommit.state', 2] },
+          },
+        },
+      })
       .exec();
+
     return data;
   }
 
@@ -171,28 +194,15 @@ export class CommentService {
 
     obj = {
       ...obj,
-      ...{ reply_content, state: 0, create_times: moment().format() },
+      ...{ reply_content, state: 1, create_times: moment().format() },
     };
 
     commentInfo.secondCommit.push(obj);
 
-    const commentUpdateOne = await this.commentModel.findByIdAndUpdate(
-      commit_id,
-      commentInfo,
-    );
-
-    if (commentUpdateOne) {
-      await this.homeModel.findByIdAndUpdate(article_id, {
-        meta: {
-          comments: data.meta.comments + 1,
-          views: data.meta.views,
-          likes: data.meta.likes,
-        },
-      });
-    }
+    await this.commentModel.findByIdAndUpdate(commit_id, commentInfo);
 
     return {
-      msg: '评论成功',
+      msg: '评论成功，博主审核中...',
       success: true,
     };
   }
@@ -224,6 +234,74 @@ export class CommentService {
 
     return {
       msg: '审核成功',
+      success: true,
+    };
+  }
+
+  /**
+   * @description: 二级评论审核
+   * @param {*}
+   * @return {*}
+   */
+  async auditTwoComment(auditBody: auditTwoCommentProps): Promise<any> {
+    const { curId, article_id } = auditBody;
+    const data: any = await this.homeModel.findById(article_id);
+
+    await this.commentModel.updateOne(
+      { 'secondCommit._id': curId },
+      {
+        $set: {
+          'secondCommit.$.state': 2,
+        },
+      },
+    );
+
+    await this.homeModel.findByIdAndUpdate(article_id, {
+      meta: {
+        comments: data.meta.comments + 1,
+        views: data.meta.views,
+        likes: data.meta.likes,
+      },
+    });
+
+    return {
+      msg: '审核成功',
+      success: true,
+    };
+  }
+
+  /**
+   * @description: 删除二级评论
+   * @param {idTypes} id
+   * @return {*}
+   */
+  async removeTwoComment(twoAuditPost: removeTwoCommentProps): Promise<any> {
+    const { commmnetId, curId, state } = twoAuditPost;
+
+    const commentInfo = await this.commentModel.findById(commmnetId);
+
+    const data = await this.homeModel.findById(commentInfo.article_id);
+
+    // 删除数组中符合条件的元素
+    await this.commentModel.updateOne(
+      { _id: commmnetId },
+      {
+        $pull: { secondCommit: { _id: curId } },
+      },
+    );
+
+    if (state === 2) {
+      await this.homeModel.findByIdAndUpdate(commentInfo.article_id, {
+        meta: {
+          comments: data.meta.comments - 1,
+          views: data.meta.views,
+          likes: data.meta.likes,
+        },
+      });
+    }
+
+    return {
+      msg: '删除成功',
       success: true,
     };
   }

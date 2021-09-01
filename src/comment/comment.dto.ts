@@ -9,3 +9,14 @@ export class secondCommentDto extends CommentPostDto {
   reply_to_user_id: string;
   commit_id: string;
 }
+
+export type removeTwoCommentProps = {
+  commmnetId: string;
+  curId: string;
+  state: number;
+};
+
+export type auditTwoCommentProps = {
+  curId: string;
+  article_id: string;
+};

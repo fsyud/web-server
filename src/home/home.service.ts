@@ -25,10 +25,13 @@ export class HomeSerivce {
    * @return {*}
    */
   async createPage(createPost: CreatePostDto): Promise<any> {
+    const user: any = await this.authModel.findById(createPost.user_id);
+
+    // state 1 草稿 2 未审核 3 已审核
     const midCreate: any = {
       ...{
         create_times: moment().format(),
-        state: 2,
+        state: user?.type == 1 ? 3 : 2,
       },
       ...createPost,
       ...{
@@ -40,16 +43,27 @@ export class HomeSerivce {
       },
     };
 
-    const user = await this.authModel.findById(createPost.user_id);
     midCreate.author_user_info = user || {};
     await new this.homeModel(midCreate).save();
 
+    if (user?.type === 1) {
+      return {
+        msg: '发布成功，博主审核中...',
+        success: true,
+      };
+    }
+
     return {
-      msg: '发布成功',
+      msg: '发布成功,',
       success: true,
     };
   }
 
+  /**
+   * @description: 得到文章列表
+   * @param {IQuery} query
+   * @return {*}
+   */
   async getArtList(query: IQuery = {}): Promise<any[]> {
     const {
       pageSize = 15,
@@ -80,6 +94,11 @@ export class HomeSerivce {
     return data;
   }
 
+  /**
+   * @description: 文章详情
+   * @param {idTypes} id
+   * @return {*}
+   */
   async getOneDetail(id: idTypes): Promise<any> {
     const find = async () => {
       const data = await this.homeModel.findById(id);
@@ -99,6 +118,12 @@ export class HomeSerivce {
     return find();
   }
 
+  /**
+   * @description: 文章更新
+   * @param {idTypes} id
+   * @param {UpdatePostDto} updataContent
+   * @return {*}
+   */
   async updateArtlist(id: idTypes, updataContent: UpdatePostDto): Promise<any> {
     const midCreate: any = {
       ...updataContent,
@@ -112,6 +137,11 @@ export class HomeSerivce {
     };
   }
 
+  /**
+   * @description: 删除文章
+   * @param {idTypes} id
+   * @return {*}
+   */
   async removeArtlist(id: idTypes): Promise<any> {
     await this.homeModel.findByIdAndDelete(id);
 
@@ -140,6 +170,11 @@ export class HomeSerivce {
     };
   }
 
+  /**
+   * @description: 热点数据
+   * @param {*}
+   * @return {*}
+   */
   async hotArticle(): Promise<any> {
     const find = await this.homeModel
       .find()

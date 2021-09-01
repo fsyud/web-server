@@ -1,7 +1,12 @@
 import { Controller, Body, Post, Delete, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CommentService } from './comment.service';
-import { CommentPostDto, secondCommentDto } from './comment.dto';
+import {
+  CommentPostDto,
+  secondCommentDto,
+  removeTwoCommentProps,
+  auditTwoCommentProps,
+} from './comment.dto';
 
 @Controller('comment')
 @ApiTags('评论')
@@ -46,5 +51,17 @@ export class CommentController {
   @ApiOperation({ summary: '添加二级评论' })
   async addTwo(@Body() commentPost: secondCommentDto): Promise<any> {
     return this.commentSerivce.addTwoComment(commentPost);
+  }
+
+  @Post('auditTwo')
+  @ApiOperation({ summary: '审核二级评论' })
+  async auditTwo(@Body() auditBody: auditTwoCommentProps): Promise<any> {
+    return this.commentSerivce.auditTwoComment(auditBody);
+  }
+
+  @Post('removeTwo')
+  @ApiOperation({ summary: '删除二级评论' })
+  async removeTwo(@Body() twoAuditPost: removeTwoCommentProps): Promise<any> {
+    return this.commentSerivce.removeTwoComment(twoAuditPost);
   }
 }

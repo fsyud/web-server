@@ -87,7 +87,7 @@ export class AwhileService {
     }
 
     return {
-      msg: '发布成功',
+      msg: '发布成功，博主审核中...',
       success: true,
     };
   }

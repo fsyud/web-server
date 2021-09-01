@@ -12,9 +12,9 @@ export class AwhileProps extends Document {
   @Prop({ required: true })
   user_name: string;
 
-  // 状态 => 0 待审核 / 1 通过正常 / -1 已删除 / -2 垃圾评论
+  // 状态 => 1 未审核 2 已审核
   @Prop({ default: 1 })
-  type: number;
+  state: number;
 
   @Prop({ required: true })
   content: string;
