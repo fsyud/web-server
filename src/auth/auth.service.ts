@@ -111,7 +111,6 @@ export class AuthService {
     if (updateBody.password) {
       updateBody.password = md5(updateBody.password + MD5_SUFFIX);
     }
-
     await this.authModel.findByIdAndUpdate(updateBody.id, updateBody);
 
     const data = await this.authModel.findById(updateBody.id);

@@ -1,7 +1,11 @@
 import { Controller, Post, Body, Delete, Query } from '@nestjs/common';
 import { AwhileService } from './awhile.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { awhilePostDto, secondawhileDto } from './awhile.dto';
+import {
+  awhilePostDto,
+  secondawhileDto,
+  auditTwoAwhileProps,
+} from './awhile.dto';
 
 @Controller('awhile')
 @ApiTags('时刻')
@@ -31,5 +35,23 @@ export class AwhileController {
   @ApiOperation({ summary: '删除一级时刻' })
   async removeOne(@Query('id') id: string): Promise<any> {
     return this.awhileService.removeOneAwhile(id);
+  }
+
+  @Post('auditOne')
+  @ApiOperation({ summary: '审核一级时刻' })
+  async auditOne(@Body() auditBody: { id: string }): Promise<any> {
+    return this.awhileService.auditOneAwhile(auditBody);
+  }
+
+  @Post('auditTwo')
+  @ApiOperation({ summary: '审核二级时刻' })
+  async auditTwo(@Body() auditBody: auditTwoAwhileProps): Promise<any> {
+    return this.awhileService.auditTwoAwhile(auditBody);
+  }
+
+  @Post('removeTwo')
+  @ApiOperation({ summary: '删除二级时刻' })
+  async removeTwo(@Body() twoAuditPost: auditTwoAwhileProps): Promise<any> {
+    return this.awhileService.removeTwoComment(twoAuditPost);
   }
 }

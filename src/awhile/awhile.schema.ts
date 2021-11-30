@@ -48,7 +48,7 @@ export class secondWhileUserProps extends Document {
   @Prop({ validate: /\S+/ })
   reply_content: string;
 
-  @Prop({ default: 0 })
+  @Prop({ default: 1 })
   state: number;
 
   @Prop({})
@@ -91,6 +91,10 @@ export class Awhile {
 
   @Prop({ required: true, type: metaApiDocument })
   meta: metaApi;
+
+  // 创建时间
+  @Prop({})
+  create_times: string;
 
   // 一级评论
   @Prop({ required: true, type: AwhilePropsSchema })

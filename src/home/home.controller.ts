@@ -48,4 +48,10 @@ export class HomeController {
   hot() {
     return this.homeSerivce.hotArticle();
   }
+
+  @Post('updateCommentNum')
+  @ApiOperation({ summary: '更新评论数字' })
+  updateCommentNum(@Body() query: { id: string; num: number }) {
+    return this.homeSerivce.updateCommentNum(query);
+  }
 }

@@ -4,7 +4,11 @@ import * as moment from 'moment';
 import { Model } from 'mongoose';
 import { Auth } from '../auth/auth.schema';
 import { Awhile, AwhileDocument } from './awhile.schema';
-import { awhilePostDto, secondawhileDto } from './awhile.dto';
+import {
+  awhilePostDto,
+  secondawhileDto,
+  auditTwoAwhileProps,
+} from './awhile.dto';
 
 @Injectable()
 export class AwhileService {
@@ -81,6 +85,7 @@ export class AwhileService {
         state: 1,
         is_handle: 2,
         oneWhile,
+        create_times: moment().format(),
         meta: {
           likes: 0,
           comments: 0,
@@ -168,8 +173,85 @@ export class AwhileService {
    * @return {*}
    */
   async removeOneAwhile(id: string): Promise<any> {
-    console.log(id);
     await this.awhileModel.findByIdAndDelete(id);
+    return {
+      msg: '删除成功',
+      success: true,
+    };
+  }
+
+  /**
+   * @description: 一级时刻审核
+   * @param {*}
+   * @return {*}
+   */
+  async auditOneAwhile(auditBody: { id: string }): Promise<any> {
+    const { id } = auditBody;
+
+    await this.awhileModel.findByIdAndUpdate(id, { state: 2 });
+    return {
+      msg: '审核成功',
+      success: true,
+    };
+  }
+
+  /**
+   * @description: 二级时刻审核
+   * @param {*}
+   * @return {*}
+   */
+  async auditTwoAwhile(auditBody: auditTwoAwhileProps): Promise<any> {
+    const { curId, parent_awhile_id } = auditBody;
+
+    const data: any = await this.awhileModel.findById(parent_awhile_id);
+
+    await this.awhileModel.updateOne(
+      { 'secondCommit._id': curId },
+      {
+        $set: {
+          'secondCommit.$.state': 2,
+        },
+      },
+    );
+
+    await this.awhileModel.findByIdAndUpdate(parent_awhile_id, {
+      meta: {
+        comments: data.meta.comments + 1,
+        likes: data.meta.likes,
+      },
+    });
+
+    return {
+      msg: '审核成功',
+      success: true,
+    };
+  }
+
+  /**
+   * @description: 删除二级时刻
+   * @param {idTypes} id
+   * @return {*}
+   */
+  async removeTwoComment(twoAuditPost: auditTwoAwhileProps): Promise<any> {
+    const { parent_awhile_id, curId } = twoAuditPost;
+
+    const whileInfo = await this.awhileModel.findById(parent_awhile_id);
+
+    // 删除数组中符合条件的元素
+    await this.awhileModel.updateOne(
+      { _id: parent_awhile_id },
+      {
+        $pull: { secondWhile: { _id: curId } },
+      },
+    );
+
+    await this.awhileModel.findByIdAndUpdate(curId, {
+      meta: {
+        comments: whileInfo.meta.comments - 1,
+        likes: whileInfo.meta.likes,
+      },
+    });
+
     return {
       msg: '删除成功',
       success: true,

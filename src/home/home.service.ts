@@ -184,4 +184,20 @@ export class HomeSerivce {
 
     return find;
   }
+
+  /**
+   * @description: 更新评论数字
+   * @param {object} query
+   * @return {*}
+   */
+  async updateCommentNum(query: { id: string; num: number }): Promise<any> {
+    await this.homeModel.findByIdAndUpdate(query.id, {
+      'meta.comments': query.num,
+    });
+
+    return {
+      msg: '更新成功成功',
+      success: true,
+    };
+  }
 }
