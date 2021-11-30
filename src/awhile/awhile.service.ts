@@ -28,12 +28,14 @@ export class AwhileService {
     sort?: any;
     page?: number;
     pageSize?: number;
+    state?: number;
   }): Promise<any> {
     const {
       sort = { 'oneWhile.create_times': -1 },
       tag,
       pageSize = 20,
       page,
+      state = 2,
     } = getAwhile;
     let wheres: any = {};
     let skip = 0;
@@ -42,6 +44,8 @@ export class AwhileService {
     } else {
       wheres.tag = getAwhile.tag;
     }
+
+    wheres.state = state;
 
     if (page <= 1) {
       skip == 0;
