@@ -35,7 +35,7 @@ export class AwhileService {
       tag,
       pageSize = 20,
       page,
-      state = 2,
+      state,
     } = getAwhile;
     let wheres: any = {};
     let skip = 0;
@@ -45,7 +45,9 @@ export class AwhileService {
       wheres.tag = getAwhile.tag;
     }
 
-    wheres.state = state;
+    if (state) {
+      wheres.state = state;
+    }
 
     if (page <= 1) {
       skip == 0;
