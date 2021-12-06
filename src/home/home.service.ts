@@ -176,12 +176,7 @@ export class HomeSerivce {
    * @return {*}
    */
   async hotArticle(): Promise<any> {
-    const find = await this.homeModel
-      .find()
-      .sort({ 'meta.views': -1 })
-      .select('title')
-      .exec();
-
+    const find = await this.homeModel.find().limit(4).select('title').exec();
     return find;
   }
 

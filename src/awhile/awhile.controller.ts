@@ -54,4 +54,10 @@ export class AwhileController {
   async removeTwo(@Body() twoAuditPost: auditTwoAwhileProps): Promise<any> {
     return this.awhileService.removeTwoComment(twoAuditPost);
   }
+
+  @Post('hot')
+  @ApiOperation({ summary: '获取热门时刻' })
+  hot() {
+    return this.awhileService.hotAwhile();
+  }
 }

@@ -234,6 +234,20 @@ export class AwhileService {
   }
 
   /**
+   * @description: 热门沸点
+   * @param {*}
+   * @return {*}
+   */
+  async hotAwhile(): Promise<any> {
+    const find = await this.awhileModel
+      .find()
+      .limit(4)
+      .select('oneWhile')
+      .exec();
+    return find;
+  }
+
+  /**
    * @description: 删除二级时刻
    * @param {idTypes} id
    * @return {*}

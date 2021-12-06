@@ -15,12 +15,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       '/login/user_login',
       '/login/userinfo',
       '/login/register',
+      '/awhile/hot',
       '/home/list',
       '/home/detail',
       '/home/hot',
       '/common/upload',
       '/comment/list',
       '/awhile/list',
+      '/proitem/list',
     ];
 
     if (whitelist.find((url) => request.url.includes(url))) {
