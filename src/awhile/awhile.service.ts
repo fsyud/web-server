@@ -241,8 +241,10 @@ export class AwhileService {
   async hotAwhile(): Promise<any> {
     const find = await this.awhileModel
       .find()
+      .where({ state: 2 })
       .limit(4)
       .select('oneWhile')
+      .sort({ 'meta.comments': -1 })
       .exec();
     return find;
   }

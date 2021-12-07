@@ -16,6 +16,9 @@ export class Proitem extends Document {
   @Prop({ required: true })
   img_url: string; // 项目封面图片
 
+  @Prop({ required: true })
+  links: string; // 项目封面图片
+
   // 创建时间
   @Prop({ required: true })
   create_times: string;
