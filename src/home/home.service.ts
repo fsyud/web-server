@@ -189,7 +189,7 @@ export class HomeSerivce {
     const find = await this.homeModel
       .find()
       .select('title create_times')
-      .sort({ create_times: 1 })
+      .sort({ create_times: -1 })
       .exec();
     return find;
   }
