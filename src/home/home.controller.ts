@@ -49,6 +49,12 @@ export class HomeController {
     return this.homeSerivce.hotArticle();
   }
 
+  @Post('pigeon')
+  @ApiOperation({ summary: '获取归档文章' })
+  pigeon() {
+    return this.homeSerivce.pigeonholeList();
+  }
+
   @Post('updateCommentNum')
   @ApiOperation({ summary: '更新评论数字' })
   updateCommentNum(@Body() query: { id: string; num: number }) {

@@ -185,6 +185,15 @@ export class HomeSerivce {
     return find;
   }
 
+  async pigeonholeList(): Promise<any> {
+    const find = await this.homeModel
+      .find()
+      .select('title create_times')
+      .sort({ create_times: 1 })
+      .exec();
+    return find;
+  }
+
   /**
    * @description: 更新评论数字
    * @param {object} query

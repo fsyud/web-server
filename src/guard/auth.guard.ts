@@ -9,8 +9,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
 
-    // console.log(request.url);
-
     const whitelist = [
       '/login/user_login',
       '/login/userinfo',
@@ -19,6 +17,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       '/home/list',
       '/home/detail',
       '/home/hot',
+      '/home/pigeon',
       '/common/upload',
       '/comment/list',
       '/awhile/list',
