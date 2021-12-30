@@ -25,3 +25,8 @@ export class UpdatePostDto {
   content: string;
   type?: string;
 }
+
+export class LikesPostDto {
+  user_id: string;
+  article_id: string;
+}

@@ -3,7 +3,7 @@ import { HomeSerivce } from './home.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { IQuery } from './../utils/query.decorator';
 
-import { CreatePostDto, UpdatePostDto } from './home.dto';
+import { CreatePostDto, UpdatePostDto, LikesPostDto } from './home.dto';
 
 @Controller('home')
 @ApiTags('首页')
@@ -59,5 +59,11 @@ export class HomeController {
   @ApiOperation({ summary: '更新评论数字' })
   updateCommentNum(@Body() query: { id: string; num: number }) {
     return this.homeSerivce.updateCommentNum(query);
+  }
+
+  @Post('likes')
+  @ApiOperation({ summary: '用户点赞' })
+  likeActions(@Body() query: LikesPostDto) {
+    return this.homeSerivce.likeActions(query);
   }
 }

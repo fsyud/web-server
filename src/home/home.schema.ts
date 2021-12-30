@@ -4,14 +4,15 @@ import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
 
 export type HomeDocument = Home & Document;
+
 @Schema()
 export class metaApi extends Document {
   // 其他元信息
   @Prop({ default: 0 })
   views: number;
 
-  @Prop({ default: 0 })
-  likes: number;
+  @Prop({ default: [] })
+  likes: any[];
 
   @Prop({ default: 0 })
   comments: number;

@@ -5,7 +5,7 @@ import * as moment from 'moment';
 import { Home } from './home.schema';
 import { Auth } from './../auth/auth.schema';
 import { Comment } from './../comment/comment.schema';
-import { CreatePostDto, UpdatePostDto } from './home.dto';
+import { CreatePostDto, UpdatePostDto, LikesPostDto } from './home.dto';
 
 import { IQuery } from './../utils/query.decorator';
 
@@ -66,7 +66,7 @@ export class HomeSerivce {
    */
   async getArtList(query: IQuery = {}): Promise<any[]> {
     const {
-      pageSize = 15,
+      pageSize = 10,
       page = 1,
       where = {},
       sort = {},
@@ -208,5 +208,33 @@ export class HomeSerivce {
       msg: '更新成功成功',
       success: true,
     };
+  }
+
+  async likeActions(query: LikesPostDto): Promise<any> {
+    const { user_id, article_id } = query;
+
+    const article_data = await this.homeModel.findById(article_id);
+
+    const curLikes = article_data.meta.likes;
+
+    if (curLikes.includes(user_id)) {
+      return {
+        msg: '已经点赞了！',
+        success: true,
+      };
+    } else {
+      await this.homeModel.findByIdAndUpdate(article_id, {
+        meta: {
+          comments: article_data.meta.comments,
+          views: article_data.meta.views,
+          likes: [...[user_id], ...curLikes],
+        },
+      });
+
+      return {
+        msg: '点赞成功！',
+        success: true,
+      };
+    }
   }
 }
