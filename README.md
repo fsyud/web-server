@@ -1,4 +1,6 @@
-<h1 align="center">Welcome to nest-a 👋</h1>
+<h1 align="center">博客后台服务👋</h1>
+
+<h2 align="center">Nodejs + Nestjs + TypeScript</h2>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
   <img src="https://img.shields.io/badge/npm-%3E%3D6.14.11-blue.svg" />
