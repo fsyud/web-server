@@ -17,37 +17,6 @@
 </p>
 
 
-```js
-.
-├── README.md
-├── README.ru-RU.md
-├── README.zh-CN.md
-├── config
-├── index.html
-├── package-lock.json
-├── package.json
-├── public
-├── src
-│   ├── App.css
-│   ├── App.tsx
-│   ├── assets
-│   ├── components
-│   ├── favicon.svg
-│   ├── index.css
-│   ├── layouts
-│   ├── locales
-│   ├── logo.svg
-│   ├── main.tsx
-│   ├── pages
-│   ├── utils
-│   └── vite-env.d.ts
-├── tree.md
-├── tsconfig.json
-├── tsconfig.node.json
-├── vite.config.ts
-└── yarn.lock
-```
-
 > 基于nestjs的博客后台。目前实现jwt验证、注册登录、路由守卫、全局异常捕获、接口统一捕获。
 
 ### 🏠 [Homepage](https://user.starryskystar.space)
