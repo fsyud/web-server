@@ -17,7 +17,7 @@
 </p>
 
 
-...js
+```js
 .
 ├── README.md
 ├── README.ru-RU.md
@@ -46,7 +46,7 @@
 ├── tsconfig.node.json
 ├── vite.config.ts
 └── yarn.lock
-...
+```
 
 > 基于nestjs的博客后台。目前实现jwt验证、注册登录、路由守卫、全局异常捕获、接口统一捕获。
 
